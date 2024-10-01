@@ -6,18 +6,38 @@
 
 manifest:
   self:
-    path: modules/lib/Arduino-Zephyr-API
+    path: modules/lib/ArduinoCore-zephyr
 
   remotes:
     - name: zephyrproject-rtos
       url-base: https://github.com/zephyrproject-rtos
+    - name: arduino
+      url-base: https://github.com/facchinm
 
   projects:
     - name: zephyr
-      remote: zephyrproject-rtos
-      revision: main
+      remote: arduino
+      revision: arduino_core_merge
       import:
         name-allowlist:
-          - cmsis      # required by the ARM port
-          - hal_nordic # required by the custom_plank board (Nordic based)
+          - cmsis
+          - hal_nordic
           - hal_ti
+          - hal_ambiq
+          - hal_espressif
+          - hal_infineon
+          - hal_intel
+          - hal_nxp
+          - hal_stm32
+          - hal_xtensa
+          - hal_nordic
+          - hal_renesas
+          - littlefs
+          - tinycrypt
+          - mbedtls
+          - segger
+          - thrift
+    - name: ArduinoCore-API
+      path: modules/lib/ArduinoCore-API
+      revision: master
+      url: git@github.com:arduino/ArduinoCore-API

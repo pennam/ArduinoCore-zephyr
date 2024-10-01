@@ -5,7 +5,7 @@ if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/variants/${BOARD})
 elseif (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/variants/${BOARD}${NORMALIZED_BOARD_QUALIFIERS})
   set(variant_dir variants/${BOARD}${NORMALIZED_BOARD_QUALIFIERS})
 else()
-  message(FATAL_ERROR "Variant dir not found: variants/${BOARD}, variants/${BOARD}${NORMALIZED_BOARD_QUALIFIERS}")
+  message(INFO "Variant dir not found: variants/${BOARD}, variants/${BOARD}${NORMALIZED_BOARD_QUALIFIERS}")
 endif()
 
 if (CONFIG_ARDUINO_API)
