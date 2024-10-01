@@ -14,6 +14,7 @@
 #include <zephyr/drivers/adc.h>
 #include <zephyr/drivers/i2c.h>
 
+#if DT_PROP_LEN(DT_PATH(zephyr_user), digital_pin_gpios) > 0
 #define DIGITAL_PIN_EXISTS(n, p, i, dev, num)                                                      \
 	(((dev == DT_REG_ADDR(DT_PHANDLE_BY_IDX(n, p, i))) &&                                      \
 	  (num == DT_PHA_BY_IDX(n, p, i, pin)))                                                    \
@@ -32,6 +33,7 @@
 #endif
 
 #undef DIGITAL_PIN_CHECK_UNIQUE
+#endif
 
 #ifndef LED_BUILTIN
 
@@ -83,7 +85,9 @@
  * enum digitalPins { D0, D1, ... LED... NUM_OF_DIGITAL_PINS };
  */
 enum digitalPins {
+#if DT_PROP_LEN(DT_PATH(zephyr_user), digital_pin_gpios) > 0
 	DT_FOREACH_PROP_ELEM_SEP(DT_PATH(zephyr_user), digital_pin_gpios, DN_ENUMS, (, )),
+#endif
 	NUM_OF_DIGITAL_PINS
 };
 
