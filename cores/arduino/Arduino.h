@@ -104,6 +104,5 @@ int digitalPinToInterrupt(pin_size_t pin);
 
 #include <variant.h>
 #ifdef __cplusplus
-#include <zephyrPrint.h>
 #include <zephyrSerial.h>
 #endif // __cplusplus
