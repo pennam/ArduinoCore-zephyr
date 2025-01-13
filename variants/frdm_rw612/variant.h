@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2022 Dhruva Gole
- *
- * SPDX-License-Identifier: Apache-2.0
- */
-
-#include "pure_analog_pins.h"
-
 // TODO: correctly handle these legacy defines
 #define MOSI    0
 #define MISO    0
