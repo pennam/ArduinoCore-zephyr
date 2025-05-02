@@ -1,0 +1,151 @@
+&zephyr_udc0 {
+	board_cdc_acm_uart: board_cdc_acm_uart {
+		compatible = "zephyr,cdc-acm-uart";
+	status = "okay";
+	};
+};
+
+&lpuart1 {
+	pinctrl-0 = <&lpuart1_tx_pg7 &lpuart1_rx_pg8
+				&lpuart1_rts_pg6 &lpuart1_cts_pg5>;
+	pinctrl-names = "default";
+	current-speed = <115200>;
+	status = "okay";
+};
+
+/*
+&usart1 {
+	status = "okay";
+	pinctrl-0 = <&usart1_tx_pb6 &usart1_rx_pb7>;
+	pinctrl-names = "default";
+	current-speed = <115200>;
+};
+*/
+
+&i2c2 {
+	status = "okay";
+	pinctrl-0 = <&i2c2_scl_pb10 &i2c2_sda_pb11>;
+	pinctrl-names = "default";
+	clock-frequency = <I2C_BITRATE_FAST>;
+};
+
+&i2c4 {
+	status = "okay";
+	pinctrl-0 = <&i2c4_scl_pf14 &i2c4_sda_pf15>;
+	pinctrl-names = "default";
+	clock-frequency = <I2C_BITRATE_FAST>;
+};
+
+&spi3 {
+	status = "okay";
+	pinctrl-0 = <&spi3_sck_pg9
+		     &spi3_miso_pg10 &spi3_mosi_pb5 &spi3_nss_pg12>;
+	pinctrl-names = "default";
+};
+
+
+&adc1 {
+	pinctrl-0 = <&adc1_in9_pa4
+		&adc1_in10_pa5
+		&adc1_in11_pa6
+		&adc1_in12_pa7
+		&adc1_in2_pc1
+		&adc1_in1_pc0>;
+	pinctrl-names = "default";
+	status = "okay";
+
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	channel@0 {
+		reg = <0>;
+		zephyr,gain = "ADC_GAIN_1";
+		zephyr,reference = "ADC_REF_INTERNAL";
+		zephyr,acquisition-time = <ADC_ACQ_TIME_MAX>;
+		zephyr,resolution = <16>;
+	};
+	channel@1 {
+		reg = <1>;
+		zephyr,gain = "ADC_GAIN_1";
+		zephyr,reference = "ADC_REF_INTERNAL";
+		zephyr,acquisition-time = <ADC_ACQ_TIME_MAX>;
+		zephyr,resolution = <16>;
+	};
+	channel@9 {
+		reg = <9>;
+		zephyr,gain = "ADC_GAIN_1";
+		zephyr,reference = "ADC_REF_INTERNAL";
+		zephyr,acquisition-time = <ADC_ACQ_TIME_MAX>;
+		zephyr,resolution = <16>;
+	};
+	channel@a {
+		reg = <10>;
+		zephyr,gain = "ADC_GAIN_1";
+		zephyr,reference = "ADC_REF_INTERNAL";
+		zephyr,acquisition-time = <ADC_ACQ_TIME_MAX>;
+		zephyr,resolution = <16>;
+	};
+	channel@b {
+		reg = <11>;
+		zephyr,gain = "ADC_GAIN_1";
+		zephyr,reference = "ADC_REF_INTERNAL";
+		zephyr,acquisition-time = <ADC_ACQ_TIME_MAX>;
+		zephyr,resolution = <16>;
+	};
+	channel@c {
+		reg = <12>;
+		zephyr,gain = "ADC_GAIN_1";
+		zephyr,reference = "ADC_REF_INTERNAL";
+		zephyr,acquisition-time = <ADC_ACQ_TIME_MAX>;
+		zephyr,resolution = <16>;
+	};
+};
+
+&flash0 {
+	partitions {
+		user_sketch: partition@f0000 {
+			reg = <0x0F0000 DT_SIZE_K(64)>;
+		};
+	};
+};
+
+/ {
+	zephyr,user {
+		digital-pin-gpios = <&arduino_header 6 0>,
+						<&arduino_header 7 0>,
+						<&arduino_header 8 0>,
+						<&arduino_header 9 0>,
+						<&arduino_header 10 0>,
+						<&arduino_header 11 0>,
+						<&arduino_header 12 0>,
+						<&arduino_header 13 0>,
+						<&gpioh 7 0>;
+
+		builtin-led-gpios = <&gpioh 7 GPIO_ACTIVE_LOW>;
+
+		pwm-pin-gpios =	<>;
+
+		adc-pin-gpios =	<&gpioc 4 0>,
+					<&gpioc 5 0>,
+					<&gpiob 0 0>,
+					<&gpiob 1 0>,
+					<&gpioc 3 0>;
+
+		serials = <&board_cdc_acm_uart>, <&lpuart1>, <&usart1>;
+		cdc-acm = <&board_cdc_acm_uart>;
+		i2cs = <&i2c2>, <&i2c4>;
+		spis = <&spi3>;
+		pwms = <>;
+
+		io-channels =	<&adc1 9>,
+				<&adc1 10>,
+				<&adc1 11>,
+				<&adc1 12>,
+				<&adc1 1>,
+				<&adc1 2>;
+
+		dac = <&dac1>;
+		dac-channels = <1>, <2>;
+		dac-resolution = <12>;
+	};
+};
