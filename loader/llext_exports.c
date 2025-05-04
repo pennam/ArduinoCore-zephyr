@@ -230,3 +230,8 @@ FORCE_EXPORT_SYM(__aeabi_ldivmod);
 FORCE_EXPORT_SYM(__aeabi_ul2f);
 FORCE_EXPORT_SYM(__aeabi_dcmpge);
 FORCE_EXPORT_SYM(__cxa_pure_virtual);
+
+#if defined(CONFIG_BOARD_B_U585I_IOT02A)
+FORCE_EXPORT_SYM(matrixBegin);
+FORCE_EXPORT_SYM(matrixWrite);
+#endif
