@@ -110,6 +110,15 @@
 	};
 };
 
+&timers17 {
+	status = "okay";
+	st,prescaler = <4>;
+
+	counter {
+		status = "okay";
+	};
+};
+
 / {
 	zephyr,user {
 		digital-pin-gpios = <&gpiob 7 GPIO_ACTIVE_HIGH>,

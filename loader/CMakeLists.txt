@@ -19,4 +19,8 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/blobs)
 FILE(GLOB app_sources *.c)
 target_sources(app PRIVATE ${app_sources})
 
+if (CONFIG_BOARD_B_U585I_IOT02A)
+    target_sources(app PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../variants/b_u585i_iot02a_stm32u585xx/matrix.c)
+endif()
+
 target_link_libraries(app PUBLIC blobs)
