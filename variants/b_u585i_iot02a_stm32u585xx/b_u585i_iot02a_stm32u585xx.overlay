@@ -13,14 +13,12 @@
 	status = "okay";
 };
 
-/*
 &usart1 {
 	status = "okay";
 	pinctrl-0 = <&usart1_tx_pb6 &usart1_rx_pb7>;
 	pinctrl-names = "default";
 	current-speed = <115200>;
 };
-*/
 
 &i2c2 {
 	status = "okay";
@@ -43,6 +41,9 @@
 	pinctrl-names = "default";
 };
 
+&gpiog {
+	status = "okay";
+};
 
 &adc1 {
 	pinctrl-0 = <&adc1_in9_pa4
@@ -111,25 +112,63 @@
 
 / {
 	zephyr,user {
-		digital-pin-gpios = <&arduino_header 6 0>,
-						<&arduino_header 7 0>,
-						<&arduino_header 8 0>,
-						<&arduino_header 9 0>,
-						<&arduino_header 10 0>,
-						<&arduino_header 11 0>,
-						<&arduino_header 12 0>,
-						<&arduino_header 13 0>,
-						<&gpioh 7 0>;
+		digital-pin-gpios = <&gpiob 7 GPIO_ACTIVE_HIGH>,
+						<&gpiob 6 GPIO_ACTIVE_HIGH>,
+						<&gpiob 3 GPIO_ACTIVE_HIGH>,
+						<&gpiob 0 GPIO_ACTIVE_HIGH>,
+						<&gpioa 12 GPIO_ACTIVE_HIGH>,
+						<&gpioa 11 GPIO_ACTIVE_HIGH>,
+						<&gpiob 1 GPIO_ACTIVE_HIGH>,
+						<&gpiob 2 GPIO_ACTIVE_HIGH>,
+						<&gpiob 4 GPIO_ACTIVE_HIGH>,
+						<&gpiob 8 GPIO_ACTIVE_HIGH>,
+						<&gpiob 9 GPIO_ACTIVE_HIGH>,
+						<&gpiob 15 GPIO_ACTIVE_HIGH>,
+						<&gpiob 14 GPIO_ACTIVE_HIGH>,
+						<&gpiob 13 GPIO_ACTIVE_HIGH>,
+						<&gpioc 2 GPIO_ACTIVE_HIGH>,  /* JSPI */
+						<&gpioc 3 GPIO_ACTIVE_HIGH>,
+						<&gpiod 1 GPIO_ACTIVE_HIGH>,
+						<&gpioc 4 GPIO_ACTIVE_LOW>,	  /* LEDs */
+						<&gpioc 5 GPIO_ACTIVE_LOW>,
+						<&gpioc 6 GPIO_ACTIVE_LOW>,
+						<&gpioc 7 GPIO_ACTIVE_LOW>,
+						<&gpioc 8 GPIO_ACTIVE_LOW>,
+						<&gpioc 9 GPIO_ACTIVE_LOW>,
+						<&gpioa 4 GPIO_ACTIVE_LOW>,	  /* ADCs */
+						<&gpioa 5 GPIO_ACTIVE_LOW>,
+						<&gpioa 6 GPIO_ACTIVE_LOW>,
+						<&gpioa 7 GPIO_ACTIVE_LOW>,
+						<&gpioc 1 GPIO_ACTIVE_LOW>,
+						<&gpioc 0 GPIO_ACTIVE_LOW>,
+						<&gpiof 0 GPIO_ACTIVE_LOW>,     /* LED matrix */
+						<&gpiof 1 GPIO_ACTIVE_LOW>,
+						<&gpiof 2 GPIO_ACTIVE_LOW>,
+						<&gpiof 3 GPIO_ACTIVE_LOW>,
+						<&gpiof 4 GPIO_ACTIVE_LOW>,
+						<&gpiof 5 GPIO_ACTIVE_LOW>,
+						<&gpiof 6 GPIO_ACTIVE_LOW>,
+						<&gpiof 7 GPIO_ACTIVE_LOW>,
+						<&gpiof 8 GPIO_ACTIVE_LOW>,
+						<&gpiof 9 GPIO_ACTIVE_LOW>,
+						<&gpiof 10 GPIO_ACTIVE_LOW>,
+						<&gpiog 13 GPIO_ACTIVE_LOW>;  /* Internal SPI RDY */
 
-		builtin-led-gpios = <&gpioh 7 GPIO_ACTIVE_LOW>;
+		builtin-led-gpios = <&gpioc 4 GPIO_ACTIVE_LOW>,
+				<&gpioc 5 GPIO_ACTIVE_LOW>,
+				<&gpioc 6 GPIO_ACTIVE_LOW>,
+				<&gpioc 7 GPIO_ACTIVE_LOW>,
+				<&gpioc 8 GPIO_ACTIVE_LOW>,
+				<&gpioc 9 GPIO_ACTIVE_LOW>;
 
 		pwm-pin-gpios =	<>;
 
-		adc-pin-gpios =	<&gpioc 4 0>,
-					<&gpioc 5 0>,
-					<&gpiob 0 0>,
-					<&gpiob 1 0>,
-					<&gpioc 3 0>;
+		adc-pin-gpios =	<&gpioa 4 0>,
+					<&gpioa 5 0>,
+					<&gpioa 6 0>,
+					<&gpioa 7 0>,
+					<&gpioc 1 0>,
+					<&gpioc 0 0>;
 
 		serials = <&board_cdc_acm_uart>, <&lpuart1>, <&usart1>;
 		cdc-acm = <&board_cdc_acm_uart>;
