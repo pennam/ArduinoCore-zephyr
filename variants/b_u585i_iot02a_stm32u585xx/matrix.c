@@ -65,7 +65,7 @@ static const uint8_t pins[][2] = {
     { 2, 7 },
     { 3, 2 },
     { 2, 3 },
-    { 4, 2 },
+    { 4, 2 }, // 60
     { 2, 4 },
     { 8, 2 },
     { 2, 8 },
@@ -75,7 +75,7 @@ static const uint8_t pins[][2] = {
     { 2, 6 },
     { 5, 2 },
     { 2, 5 },
-    { 1, 2 },
+    { 1, 2 }, // 70
     { 2, 1 },
     { 7, 10 },
     { 10, 7 },
@@ -85,7 +85,7 @@ static const uint8_t pins[][2] = {
     { 10, 4 },
     { 8, 10 },
     { 10, 8 },
-    { 0, 10 },
+    { 0, 10 }, // 80
     { 10, 0 },
     { 6, 10 },
     { 10, 6 },
@@ -95,7 +95,7 @@ static const uint8_t pins[][2] = {
     { 10, 1 },
     { 2, 10 },
     { 10, 2 },
-    { 7, 9 },
+    { 7, 9 }, // 90
     { 9, 7 },
     { 3, 9 },
     { 9, 3 },
@@ -105,7 +105,7 @@ static const uint8_t pins[][2] = {
     { 9, 8 },
     { 0, 9 },
     { 9, 0 },
-    { 6, 9 },
+    { 6, 9 }, // 100
     { 9, 6 },
     { 5, 9 },
     { 9, 5 },
@@ -174,6 +174,9 @@ void matrixBegin() {
 
 	counter_set_top_value(counter_dev, &top_cfg);
 
-    uint32_t buf[4] = {0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF};
+    uint32_t buf[4] = {0x38E22, 0x8A48375D, 0x920A288E, 0x1C};
+    for (int i = 0; i < 4 ; i++) {
+        buf[i] = reverse(buf[i]);
+    }
     matrixWrite(buf);
 }
