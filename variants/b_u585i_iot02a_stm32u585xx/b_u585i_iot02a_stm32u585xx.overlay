@@ -5,6 +5,31 @@
 	};
 };
 
+/delete-node/ &uart4;
+/delete-node/ &octospi2;
+
+/ {
+	chosen {
+		zephyr,bt-hci = &usart1;
+	};
+};
+
+
+&clk_hse {
+	clock-frequency = <DT_FREQ_M(16)>;
+	status = "okay";
+};
+
+/*
+&rcc {
+	clock-frequency = <DT_FREQ_M(40)>;
+};
+
+&pll1 {
+	mul-n = <20>;
+};
+*/
+
 &lpuart1 {
 	pinctrl-0 = <&lpuart1_tx_pg7 &lpuart1_rx_pg8
 				&lpuart1_rts_pg6 &lpuart1_cts_pg5>;
@@ -18,6 +43,14 @@
 	pinctrl-0 = <&usart1_tx_pb6 &usart1_rx_pb7>;
 	pinctrl-names = "default";
 	current-speed = <115200>;
+};
+
+&usart3 {
+	status = "disabled";
+};
+
+&i2c1 {
+	status = "disabled";
 };
 
 &i2c2 {
@@ -44,6 +77,12 @@
 &gpiog {
 	status = "okay";
 };
+
+/*
+&adc1 {
+	status = "disabled";
+};
+*/
 
 &adc1 {
 	pinctrl-0 = <&adc1_in9_pa4

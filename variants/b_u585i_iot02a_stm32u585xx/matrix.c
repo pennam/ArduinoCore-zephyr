@@ -168,13 +168,22 @@ void matrixBegin() {
     counter_start(counter_dev);
 
     struct counter_top_cfg top_cfg;
-	top_cfg.ticks = counter_us_to_ticks(counter_dev, 10000);
+	top_cfg.ticks = counter_us_to_ticks(counter_dev, 50);
 	top_cfg.callback = timer_irq_handler_fn;
 	top_cfg.user_data = &top_cfg;
+    top_cfg.flags = 0;
 
-	counter_set_top_value(counter_dev, &top_cfg);
+	int err = counter_set_top_value(counter_dev, &top_cfg);
+    if (err) {
+        printk("Failed to set counter_set_top_value");
+    }
 
-    uint32_t buf[4] = {0x38E22, 0x8A48375D, 0x920A288E, 0x1C};
+    //uint32_t buf[4] = {0x38E22, 0x8A09375D, 0x824A288E, 0x38000000};
+    uint32_t buf[4] = {
+        0b00000000000000011100011100010001,
+        0b01000101000001001001101110101110,
+        0b11000001001001010001010001000111,
+        0b00011100000000000000000000000000};
     for (int i = 0; i < 4 ; i++) {
         buf[i] = reverse(buf[i]);
     }
