@@ -135,8 +135,8 @@ static void turnLed(int idx, bool on) {
     GPIOF->MODER = 0;
 
     if (on) {
-        GPIOF->MODER |= (1 << (idxToPin(pins[idx][0]) * 2) | 1 << (idxToPin(pins[idx][1]) * 2));
         GPIOF->BSRR |= (1 << (idxToPin(pins[idx][0])) | 1 << (idxToPin(pins[idx][1]) + 16));
+        GPIOF->MODER |= (1 << (idxToPin(pins[idx][0]) * 2) | 1 << (idxToPin(pins[idx][1]) * 2));
     }
 }
 
@@ -158,7 +158,7 @@ static void timer_irq_handler_fn(const struct device *counter_dev, void *user_da
 }
 
 void matrixWrite(uint32_t* buf) {
-    memcpy(framebuffer, (uint32_t*)buf, NUM_MATRIX_LEDS/8);
+    memcpy(framebuffer, buf, NUM_MATRIX_LEDS/8);
 }
 
 #define TIMER DT_INST(0, st_stm32_counter)
@@ -179,13 +179,20 @@ void matrixBegin() {
     }
 
     //uint32_t buf[4] = {0x38E22, 0x8A09375D, 0x824A288E, 0x38000000};
+    /*
     uint32_t buf[4] = {
         0b00000000000000011100011100010001,
         0b01000101000001001001101110101110,
         0b11000001001001010001010001000111,
         0b00011100000000000000000000000000};
+    */
+    uint32_t buf[4] = {
+        0b01111111000000100000100000010000,
+        0b01000000100000100000010001010000,
+        0b00100001100000011111111000000000,
+        0b00110000000000000000000000000000};
     for (int i = 0; i < 4 ; i++) {
         buf[i] = reverse(buf[i]);
     }
-    matrixWrite(buf);
+    //matrixWrite(buf);
 }

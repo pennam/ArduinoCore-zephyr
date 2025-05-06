@@ -145,3 +145,7 @@ int maybe_flash_bootloader(void)
 SYS_INIT(maybe_flash_bootloader, POST_KERNEL, CONFIG_FILE_SYSTEM_INIT_PRIORITY);
 
 #endif
+
+#if defined(CONFIG_BOARD_B_U585I_IOT02A)
+#include "matrix.inc"
+#endif
