@@ -6,7 +6,11 @@
 };
 
 /delete-node/ &uart4;
+/delete-node/ &usart3;
+/delete-node/ &smbus1;
+/delete-node/ &i2c1;
 /delete-node/ &octospi2;
+/delete-node/ &timers4;
 
 / {
 	chosen {
@@ -17,6 +21,11 @@
 
 &clk_hse {
 	clock-frequency = <DT_FREQ_M(16)>;
+	status = "okay";
+};
+
+&clk_lse {
+	clock-frequency = <32768>;
 	status = "okay";
 };
 
@@ -43,14 +52,6 @@
 	pinctrl-0 = <&usart1_tx_pb6 &usart1_rx_pb7>;
 	pinctrl-names = "default";
 	current-speed = <115200>;
-};
-
-&usart3 {
-	status = "disabled";
-};
-
-&i2c1 {
-	status = "disabled";
 };
 
 &i2c2 {
