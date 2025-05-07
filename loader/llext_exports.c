@@ -234,4 +234,5 @@ FORCE_EXPORT_SYM(__cxa_pure_virtual);
 #if defined(CONFIG_BOARD_B_U585I_IOT02A)
 FORCE_EXPORT_SYM(matrixBegin);
 FORCE_EXPORT_SYM(matrixWrite);
+FORCE_EXPORT_SYM(matrixColorWrite);
 #endif
