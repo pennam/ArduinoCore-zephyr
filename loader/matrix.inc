@@ -130,6 +130,7 @@ const int idxToPin(int idx) {
 
 #define NUM_MATRIX_LEDS 104
 static uint8_t __attribute__((aligned)) framebuffer[NUM_MATRIX_LEDS / 8];
+static uint8_t __attribute__((aligned)) framebuffer_color[NUM_MATRIX_LEDS];
 
 static void turnLed(int idx, bool on) {
     GPIOF->MODER = 0;
@@ -150,15 +151,54 @@ static uint32_t reverse(uint32_t x)
     return x;
 }
 
+static bool color = false;
+
 static void timer_irq_handler_fn(const struct device *counter_dev, void *user_data)
 {
     static volatile int i_isr = 0;
-    turnLed(i_isr, ((framebuffer[i_isr >> 3] & (1 << (i_isr % 8))) != 0));
+    if (color) {
+        static volatile int counter = 0;
+        switch (framebuffer_color[i_isr]) {
+            case 0:
+                turnLed(i_isr, false);
+                break;
+            case 1:
+                turnLed(i_isr, counter % 31 == 0);
+                break;
+            case 2:
+                turnLed(i_isr, counter % 23 == 0);
+                break;
+            case 3:
+                turnLed(i_isr, counter % 15 == 0);
+                break;
+            case 4:
+                turnLed(i_isr, counter % 9 == 0);
+                break;
+            case 5:
+                turnLed(i_isr, counter % 5 == 0);
+                break;
+            case 6:
+                turnLed(i_isr, counter % 3 == 0);
+                break;
+            case 7:
+                turnLed(i_isr, true);
+                break;
+        }
+        counter++;
+    } else {
+        turnLed(i_isr, ((framebuffer[i_isr >> 3] & (1 << (i_isr % 8))) != 0));
+    }
     i_isr = (i_isr + 1) % NUM_MATRIX_LEDS;
 }
 
 void matrixWrite(uint32_t* buf) {
     memcpy(framebuffer, buf, NUM_MATRIX_LEDS/8);
+    color = false;
+}
+
+void matrixColorWrite(uint8_t* buf) {
+    memcpy(framebuffer_color, buf, NUM_MATRIX_LEDS);
+    color = true;
 }
 
 #define TIMER DT_INST(0, st_stm32_counter)
@@ -168,7 +208,7 @@ void matrixBegin() {
     counter_start(counter_dev);
 
     struct counter_top_cfg top_cfg;
-	top_cfg.ticks = counter_us_to_ticks(counter_dev, 50);
+	top_cfg.ticks = counter_us_to_ticks(counter_dev, 5);
 	top_cfg.callback = timer_irq_handler_fn;
 	top_cfg.user_data = &top_cfg;
     top_cfg.flags = 0;
