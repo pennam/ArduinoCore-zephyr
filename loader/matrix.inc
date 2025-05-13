@@ -152,13 +152,14 @@ static uint32_t reverse(uint32_t x)
 }
 
 static bool color = false;
+static uint8_t _max_grayscale_bits = 3;
 
 static void timer_irq_handler_fn(const struct device *counter_dev, void *user_data)
 {
     static volatile int i_isr = 0;
     if (color) {
         static volatile int counter = 0;
-        switch (framebuffer_color[i_isr]) {
+        switch ((framebuffer_color[i_isr] * 8 / (1 << _max_grayscale_bits))) {
             case 0:
                 turnLed(i_isr, false);
                 break;
@@ -196,9 +197,13 @@ void matrixWrite(uint32_t* buf) {
     color = false;
 }
 
-void matrixColorWrite(uint8_t* buf) {
+void matrixGrayscaleWrite(uint8_t* buf) {
     memcpy(framebuffer_color, buf, NUM_MATRIX_LEDS);
     color = true;
+}
+
+void matrixSetGrayscaleBits(uint8_t _max) {
+    _max_grayscale_bits = _max;
 }
 
 #define TIMER DT_INST(0, st_stm32_counter)
