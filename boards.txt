@@ -588,6 +588,7 @@ jomla.build.float-abi=-mfloat-abi=hard
 jomla.build.extra_flags=
 jomla.build.postbuild.cmd="{tools.imgtool.path}/{tools.imgtool.cmd}" exit
 jomla.build.board=jomla
+jomla.build.zephyr_hals=hal_stm32
 jomla.compiler.zephyr.arch.define=
 jomla.compiler.zephyr=
 jomla.vid.0=0x0483
