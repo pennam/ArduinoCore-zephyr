@@ -211,7 +211,7 @@ jobs:
           role-session-name: "GHA_to_AWS_via_OIDC_for_ArduinoCore-zephyr"
 
       - name: Upload artifact
-        run: aws s3 cp ${{ env.ARTIFACT_FILE }} s3://apt-repo.oniudra.cc/ # TODO: probably change this
+        run: aws s3 cp ${{ env.ARTIFACT_FILE }} s3://apt-repo.oniudra.cc/
 
   publish-json:
     name: Publish json
@@ -265,4 +265,4 @@ jobs:
           role-session-name: "GHA_to_AWS_via_OIDC_for_ArduinoCore-zephyr"
 
       - name: Upload artifact
-        run: aws s3 cp ${{ env.PACKAGE_INDEX_JSON }} s3://apt-repo.oniudra.cc/ # TODO: probably change this
+        run: aws s3 cp ${{ env.PACKAGE_INDEX_JSON }} s3://apt-repo.oniudra.cc/
