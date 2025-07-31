@@ -76,6 +76,8 @@ FORCE_EXPORT_SYM(net_if_ipv4_set_gw);
 FORCE_EXPORT_SYM(net_if_ipv4_addr_add);
 FORCE_EXPORT_SYM(net_if_ipv4_set_netmask_by_addr);
 FORCE_EXPORT_SYM(net_if_lookup_by_dev);
+FORCE_EXPORT_SYM(_net_if_list_start);
+FORCE_EXPORT_SYM(_net_if_list_end);
 #endif
 
 #if defined(CONFIG_NET_L2_ETHERNET)

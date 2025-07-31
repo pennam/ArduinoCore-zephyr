@@ -45,10 +45,12 @@ public:
 
     EthernetHardwareStatus hardwareStatus() {
         const struct device *const dev = DEVICE_DT_GET(DT_COMPAT_GET_ANY_STATUS_OKAY(ethernet_phy));
+        int if_count;
+        NET_IFACE_COUNT(&if_count);
         if (device_is_ready(dev)) {
-            for (int i = 1; i <= 3; i++) {
+            for (int i = 1; i <= if_count; i++) {
                 auto _if = net_if_get_by_index(i);
-                if ((_if != nullptr) && !net_eth_type_is_wifi(_if)) {
+                if (!net_eth_type_is_wifi(_if)) {
                     netif = _if;
                     break;
                 }
