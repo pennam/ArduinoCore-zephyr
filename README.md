@@ -141,6 +141,19 @@ brew install python cmake ninja zstd jq git
 ```
 Note: Homebrew’s Python installation already includes `pip`, `setuptools` and `venv`.
 
+### On Windows
+Windows is not currently supported. However it is possible to setup and build the loader using WSL. You will need to follow the instructions given above for installing on Ubuntu.
+
+There are two strategies:
+1) Install the sources in the native Windows filesystem (NTFS, FAT32, etc) and within WSL, cd to the root directory where you installed your sources, like: `/mnt/d/github/ArduinoCore-zephyr`.
+2) Install the sources within the WSL file system, like: `~/git/ArduinoCore-zephyr`
+
+There are pros and cons to both strategies:
+1) Builds are relatively very slow, but once done you can use it directly within Arduino. 
+2) Builds are a lot faster, however, you need to copy the resulting build back to somewhere in your windows directory structure. It is this location, that you will add to the Arduino IDE as mentioned below in the section: Using the core in Arduino IDE/CLI.
+
+In either strategy, you may have to update the link: `cores\arduino\api`.
+
 ### Run the ```bootstrap``` script
 ```bash
 cd ArduinoCore-zephyr
