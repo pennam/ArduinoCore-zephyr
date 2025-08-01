@@ -114,7 +114,7 @@ The most important components of this project are:
 ## 🛠️ Setup a Zephyr build environment
 
 > [!WARNING]  
-> If you checked out this repo before 0.3.2 was released, delete your local copy and clone the repository again following the installation instructions. See #163 for more details.
+> If you checked out this repo before 0.3.2 was released, delete your local copy and clone the repository again following the installation instructions. See [#163](https://github.com/arduino/ArduinoCore-zephyr/issues/163) for more details.
 
 In this section, we’ll guide you through setting up your environment to work on and update the Zephyr core.
 
