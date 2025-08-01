@@ -3,7 +3,7 @@
     {
       "platforms": [
         {
-          "name": "Arduino Zephyr Boards",
+          "name": "Arduino Zephyr Boards (BETA)",
           "architecture": "zephyr",
           "version": "__CORE_TAG__",
           "category": "Arduino",
