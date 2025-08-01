@@ -118,7 +118,7 @@ The most important components of this project are:
 
 In this section, we’ll guide you through setting up your environment to work on and update the Zephyr core.
 
-Shell scripts are available to simplify the installation process (Windows is not supported at the moment 😔).
+Shell scripts are available to simplify the installation process (Windows is not directly supported at the moment 😔, but there are some tricks - see below).
 
 ### Clone the repository
 ```bash
@@ -145,7 +145,7 @@ brew install python cmake ninja zstd jq git
 Note: Homebrew’s Python installation already includes `pip`, `setuptools` and `venv`.
 
 ### On Windows
-Windows is not currently supported. However it is possible to setup and build the loader using WSL. You will need to follow the instructions given above for installing on Ubuntu.
+Building natively on Windows is not currently supported; however, it is possible to setup and build the loader using [WSL](https://learn.microsoft.com/windows/wsl/about). You will need to follow the instructions given above for installing on Ubuntu.
 
 There are two strategies:
 1) Install the sources in the native Windows filesystem (NTFS, FAT32, etc) and within WSL, cd to the root directory where you installed your sources, like: `/mnt/d/github/ArduinoCore-zephyr`.
