@@ -263,8 +263,6 @@ Contributions are always welcome. The preferred way to receive code contribution
 
 ## 📌 Upcoming features
 
-- [ ] Remove binaries from this repo history (arduino/ArduinoCore-zephyr#102, :warning: will require a clean clone)
-- [x] Network: support UDP and TLS
 - [ ] USB: switch to `USB_DEVICE_STACK_NEXT` to support PluggableUSB
 - [ ] Relocate RODATA in flash to accommodate sketches with large assets
 - [ ] Provide better error reporting for failed llext operations
