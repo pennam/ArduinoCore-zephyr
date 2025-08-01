@@ -1,9 +1,9 @@
-# Arduino Zephyr llext Core and platform.
+# Arduino Zephyr (BETA) Core and platform.
 #
 # For more info:
 # https://github.com/arduino/Arduino/wiki/Arduino-IDE-1.5---3rd-party-Hardware-specification
 
-name=Arduino Zephyr Boards
+name=Arduino Zephyr Boards (BETA)
 version=9.9.9
 
 # Compile variables

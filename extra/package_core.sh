@@ -15,10 +15,15 @@ fi
 PACKAGE=ArduinoCore-zephyr
 VERSION=$1
 
+# create a temporary platform.txt file with the correct version
+TEMP_PLATFORM=$(mktemp -p . | sed 's/\.\///')
+sed -e "s/^version=.*/version=${VERSION}/" platform.txt > ${TEMP_PLATFORM}
+
 TEMP_LIST=$(mktemp)
+echo ${TEMP_PLATFORM} > ${TEMP_LIST}
 
 # import a basic list of files and directories
-cat extra/package_core.inc | sed -e 's/\s*#.*//' | grep -v '^\s*$' > ${TEMP_LIST}
+cat extra/package_core.inc | sed -e 's/\s*#.*//' | grep -v '^\s*$' >> ${TEMP_LIST}
 
 # add the board-specific files
 extra/get_board_details.sh | jq -cr '.[]' | while read -r item; do
@@ -28,5 +33,5 @@ extra/get_board_details.sh | jq -cr '.[]' | while read -r item; do
 done
 cat ${TEMP_LIST}
 mkdir -p distrib
-tar -cjhf distrib/${PACKAGE}-${VERSION}.tar.bz2 -X extra/package_core.exc -T ${TEMP_LIST} --transform "s,^,${PACKAGE}/,"
-rm -f ${TEMP_LIST}
+tar -cjhf distrib/${PACKAGE}-${VERSION}.tar.bz2 -X extra/package_core.exc -T ${TEMP_LIST} --transform "s,${TEMP_PLATFORM},platform.txt," --transform "s,^,${PACKAGE}/,"
+rm -f ${TEMP_LIST} ${TEMP_PLATFORM}

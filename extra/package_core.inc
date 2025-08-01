@@ -2,11 +2,11 @@
 # to any core package archive.
 #
 # NOTE: board-specific entries in the 'firmwares/' and 'variants/' directories
-#       are automatically added by package.sh depending on the information in
-#       'boards.txt', so they should not be included here.
+#       are automatically added by package_core.sh depending on the information
+#       in 'boards.txt', so they should not be included here.
 
 boards.txt
-platform.txt
+# platform.txt is added by package_core.sh
 programmers.txt
 LICENSE
 README.md
