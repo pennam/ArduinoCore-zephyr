@@ -113,6 +113,9 @@ The most important components of this project are:
 
 ## 🛠️ Setup a Zephyr build environment
 
+> [!WARNING]  
+> If upgrading from release ≤ 0.3.1 to > 0.3.1: delete your local copy and clone the repository again following the installation instructions.
+
 In this section, we’ll guide you through setting up your environment to work on and update the Zephyr core.
 
 Shell scripts are available to simplify the installation process (Windows is not supported at the moment 😔).
