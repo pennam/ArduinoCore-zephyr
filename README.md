@@ -113,6 +113,9 @@ The most important components of this project are:
 
 ## 🛠️ Setup a Zephyr build environment
 
+> [!WARNING]  
+> If you checked out this repo before 0.3.2 was released, delete your local copy and clone the repository again following the installation instructions. See [#163](https://github.com/arduino/ArduinoCore-zephyr/issues/163) for more details.
+
 In this section, we’ll guide you through setting up your environment to work on and update the Zephyr core.
 
 Shell scripts are available to simplify the installation process (Windows is not supported at the moment 😔).
@@ -273,8 +276,6 @@ Contributions are always welcome. The preferred way to receive code contribution
 
 ## 📌 Upcoming features
 
-- [ ] Remove binaries from this repo history (arduino/ArduinoCore-zephyr#102, :warning: will require a clean clone)
-- [x] Network: support UDP and TLS
 - [ ] USB: switch to `USB_DEVICE_STACK_NEXT` to support PluggableUSB
 - [ ] Relocate RODATA in flash to accommodate sketches with large assets
 - [ ] Provide better error reporting for failed llext operations
