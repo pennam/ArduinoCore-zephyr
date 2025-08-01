@@ -21,7 +21,7 @@ public:
 	EthernetClass() {}
 	virtual ~EthernetClass() {}
 
-    int begin(uint8_t *mac, unsigned long timeout = 60000, unsigned long responseTimeout = 4000);
+    int begin(uint8_t *mac = nullptr, unsigned long timeout = 60000, unsigned long responseTimeout = 4000);
 	int maintain();
 	EthernetLinkStatus linkStatus();
 	EthernetHardwareStatus hardwareStatus();

@@ -52,6 +52,7 @@ class NetworkInterface {
         IPAddress dnsIP(int n = 0);
 
         void setMACAddress(const uint8_t* mac);
+        bool setLocalIP(IPAddress ip, IPAddress subnet, IPAddress gateway);
 
         int begin(bool blocking = true, uint32_t additional_event_mask = 0);
 

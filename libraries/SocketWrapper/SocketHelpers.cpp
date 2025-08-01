@@ -152,3 +152,25 @@ int NetworkInterface::begin(bool blocking, uint32_t additional_event_mask) {
 bool NetworkInterface::disconnect() {
     return (net_if_down(netif) == 0);
 }
+
+bool NetworkInterface::setLocalIP(IPAddress ip, IPAddress subnet, IPAddress gateway) {
+    struct in_addr ip_addr, subnet_addr, gw_addr;
+    
+    ip_addr.s_addr = ip;
+    subnet_addr.s_addr = subnet;
+    gw_addr.s_addr = gateway;
+
+    if (!net_if_ipv4_addr_add(netif, &ip_addr, NET_ADDR_MANUAL, 0)) {
+        LOG_ERR("Failed to set static IP address");
+        return false;
+    }
+
+    if (!net_if_ipv4_set_netmask_by_addr(netif, &ip_addr, &subnet_addr)) {
+        LOG_ERR("Failed to set subnet mask");
+        return false;
+    }
+
+    net_if_ipv4_set_gw(netif, &gw_addr);
+    LOG_INF("Static IP configured");
+    return true;
+}

@@ -30,9 +30,17 @@ int EthernetClass::begin(uint8_t *mac, IPAddress ip, IPAddress dns, IPAddress ga
 }
 
 int EthernetClass::begin(uint8_t *mac, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet, unsigned long timeout, unsigned long responseTimeout) {
-    // TODO: Config the network interface with the provided IP, DNS, gateway, and subnet
+    setMACAddress(mac);
 
-    return begin(mac, timeout, responseTimeout);
+    if (!NetworkInterface::setLocalIP(ip, subnet, gateway)) {
+        return 0;
+    }
+
+    if (!net_if_is_up(netif)) {
+        net_if_up(netif);
+    }
+
+    return 1;
 }
 
 EthernetLinkStatus EthernetClass::linkStatus() {
