@@ -1,0 +1,200 @@
+&i2c4 {
+	status = "okay";
+	pinctrl-0 = <&i2c4_scl_pd12 &i2c4_sda_pd13>;
+	pinctrl-1 = <&i2c4_scl_pf14 &i2c4_sda_pf15>;
+	pinctrl-names = "default", "sleep"; /* TODO: sleep is jmisc mux */
+	clock-frequency = <I2C_BITRATE_FAST>;
+
+/*
+	gc2145: gc2145@3c {
+		status = "okay";
+		compatible = "galaxycore,gc2145";
+		reg = <0x3c>;
+		reset-gpios = <&gpioa 10 GPIO_ACTIVE_LOW>;
+		pwdn-gpios = <&gpiod 2 GPIO_ACTIVE_LOW>;
+
+		port {
+			gc2145_ep_out: endpoint {
+				remote-endpoint = <&dcmi_ep_in>;
+			};
+		};
+	};
+*/
+};
+
+/* clock from HSI48 */
+&mco1 {
+	status = "okay";
+	clocks = <&rcc STM32_SRC_HSI48 MCO1_SEL(8)>;
+	prescaler = <MCO1_PRE(MCO_PRE_DIV_4)>;
+	pinctrl-0 = <&rcc_mco_pa8>;
+	pinctrl-names = "default";
+};
+
+/*
+&dcmi {
+	status = "okay";
+	pinctrl-0 = <&dcmi_hsync_pd8 &dcmi_pixclk_pd9 &dcmi_vsync_pi5
+				&dcmi_d0_pc6 &dcmi_d1_pc7 &dcmi_d2_pc8 &dcmi_d3_pc9
+				&dcmi_d4_pe4 &dcmi_d5_pi4 &dcmi_d6_pi6 &dcmi_d7_pi7>;
+	pinctrl-names = "default";
+	dmas = <&gpdma1 12 86 (STM32_DMA_PERIPH_TO_MEMORY | STM32_DMA_PERIPH_NO_INC |
+			STM32_DMA_MEM_INC | STM32_DMA_PERIPH_32BITS | STM32_DMA_MEM_32BITS |
+			STM32_DMA_PRIORITY_HIGH) STM32_DMA_FIFO_1_4>;
+
+	port {
+		dcmi_ep_in: endpoint {
+			remote-endpoint-label = "gc2145_ep_out";
+			bus-width = <8>;
+			hsync-active = <0>;
+			vsync-active = <0>;
+			pclk-sample = <0>;
+		};
+	};
+};
+*/
+
+&flash0 {
+	partitions {
+		bootanimation: partition@90000 {
+			reg = <0x090000 DT_SIZE_K(64)>;
+		};
+		user_sketch: partition@f0000 {
+			reg = <0x0F0000 DT_SIZE_K(64)>;
+		};
+	};
+};
+
+&timers16 {
+	status = "okay";
+	st,prescaler = <4>;
+
+	counter_servo: counter {
+		status = "okay";
+		label = "SERVO_COUNTER";
+	};
+};
+
+
+&timers17 {
+	status = "okay";
+	st,prescaler = <4>;
+
+	counter_matrix: counter {
+		status = "okay";
+		label = "LED_MATRIX_COUNTER";
+	};
+};
+
+/ {
+	zephyr,user {
+		digital-pin-gpios = <&gpiob 7 GPIO_ACTIVE_HIGH>,        /* JDIGITAL */
+				    <&gpiob 6 GPIO_ACTIVE_HIGH>,
+				    <&gpiob 3 GPIO_ACTIVE_HIGH>,
+				    <&gpiob 0 GPIO_ACTIVE_HIGH>,
+				    <&gpioa 12 GPIO_ACTIVE_HIGH>,
+				    <&gpioa 11 GPIO_ACTIVE_HIGH>,
+				    <&gpiob 1 GPIO_ACTIVE_HIGH>,
+				    <&gpiob 2 GPIO_ACTIVE_HIGH>,
+				    <&gpiob 4 GPIO_ACTIVE_HIGH>,
+				    <&gpiob 8 GPIO_ACTIVE_HIGH>,
+				    <&gpiob 9 GPIO_ACTIVE_HIGH>,
+				    <&gpiob 15 GPIO_ACTIVE_HIGH>,
+				    <&gpiob 14 GPIO_ACTIVE_HIGH>,
+				    <&gpiob 13 GPIO_ACTIVE_HIGH>,
+
+				    <&gpioa 4 GPIO_ACTIVE_HIGH>,	/* ADCs */
+				    <&gpioa 5 GPIO_ACTIVE_HIGH>,
+				    <&gpioa 6 GPIO_ACTIVE_HIGH>,
+				    <&gpioa 7 GPIO_ACTIVE_HIGH>,
+				    <&gpioc 1 GPIO_ACTIVE_HIGH>,
+				    <&gpioc 0 GPIO_ACTIVE_HIGH>,
+
+				    <&gpiob 11 GPIO_ACTIVE_HIGH>,  /* D20 - PB11 */
+				    <&gpiob 10 GPIO_ACTIVE_HIGH>,  /* D21 - PB10 */
+
+				    <&gpioc 2 GPIO_ACTIVE_HIGH>,        /* JSPI */
+				    <&gpioc 3 GPIO_ACTIVE_HIGH>,
+				    <&gpiod 1 GPIO_ACTIVE_HIGH>,
+
+				    <&gpioc 6 GPIO_ACTIVE_HIGH>,	/* JMISC */
+				    <&gpiod 2 GPIO_ACTIVE_HIGH>,
+				    <&gpioc 7 GPIO_ACTIVE_HIGH>,
+				    <&gpioe 2 GPIO_ACTIVE_HIGH>,
+				    <&gpioc 8 GPIO_ACTIVE_HIGH>,
+				    <&gpioe 3 GPIO_ACTIVE_HIGH>,
+				    <&gpioc 9 GPIO_ACTIVE_HIGH>,
+				    <&gpioe 5 GPIO_ACTIVE_HIGH>,
+				    <&gpioe 4 GPIO_ACTIVE_HIGH>,
+				    <&gpioe 6 GPIO_ACTIVE_HIGH>,
+				    <&gpioi 4 GPIO_ACTIVE_HIGH>,
+				    <&gpioe 7 GPIO_ACTIVE_HIGH>,
+				    <&gpioi 6 GPIO_ACTIVE_HIGH>,
+				    <&gpioe 8 GPIO_ACTIVE_HIGH>,
+				    <&gpioi 7 GPIO_ACTIVE_HIGH>,
+				    <&gpiof 14 GPIO_ACTIVE_HIGH>,
+				    <&gpiod 9 GPIO_ACTIVE_HIGH>,
+				    <&gpiof 15 GPIO_ACTIVE_HIGH>,
+				    <&gpioi 5 GPIO_ACTIVE_HIGH>,
+				    <&gpioa 3 GPIO_ACTIVE_HIGH>,
+				    <&gpiod 8 GPIO_ACTIVE_HIGH>,
+				    <&gpioa 0 GPIO_ACTIVE_HIGH>,
+				    <&gpioa 8 GPIO_ACTIVE_HIGH>,
+				    <&gpioa 1 GPIO_ACTIVE_HIGH>,
+				    <&gpioa 10 GPIO_ACTIVE_HIGH>,
+
+				    <&gpioh 10 GPIO_ACTIVE_HIGH>,        /* LEDs */
+				    <&gpioh 11 GPIO_ACTIVE_HIGH>,
+				    <&gpioh 12 GPIO_ACTIVE_HIGH>,
+				    <&gpioh 13 GPIO_ACTIVE_HIGH>,
+				    <&gpioh 14 GPIO_ACTIVE_HIGH>,
+				    <&gpioh 15 GPIO_ACTIVE_HIGH>,
+
+				    <&gpiof 0 GPIO_ACTIVE_HIGH>,        /* LED matrix */
+				    <&gpiof 1 GPIO_ACTIVE_HIGH>,
+				    <&gpiof 2 GPIO_ACTIVE_HIGH>,
+				    <&gpiof 3 GPIO_ACTIVE_HIGH>,
+				    <&gpiof 4 GPIO_ACTIVE_HIGH>,
+				    <&gpiof 5 GPIO_ACTIVE_HIGH>,
+				    <&gpiof 6 GPIO_ACTIVE_HIGH>,
+				    <&gpiof 7 GPIO_ACTIVE_HIGH>,
+				    <&gpiof 8 GPIO_ACTIVE_HIGH>,
+				    <&gpiof 9 GPIO_ACTIVE_HIGH>,
+				    <&gpiof 10 GPIO_ACTIVE_HIGH>,
+
+				    <&gpiog 13 GPIO_ACTIVE_HIGH>,       /* Internal SPI RDY */
+				    <&gpioh 3 GPIO_ACTIVE_HIGH>;        /* BOOT0 */
+
+		builtin-led-gpios = <&gpioh 10 GPIO_ACTIVE_HIGH>,
+				    <&gpioh 11 GPIO_ACTIVE_HIGH>,
+				    <&gpioh 12 GPIO_ACTIVE_HIGH>,
+				    <&gpioh 13 GPIO_ACTIVE_HIGH>,
+				    <&gpioh 14 GPIO_ACTIVE_HIGH>,
+				    <&gpioh 15 GPIO_ACTIVE_HIGH>;
+
+		pwm-pin-gpios =	<>;
+
+		adc-pin-gpios =	<&gpioa 4 0>,
+					<&gpioa 5 0>,
+					<&gpioa 6 0>,
+					<&gpioa 7 0>,
+					<&gpioc 1 0>,
+					<&gpioc 0 0>;
+
+		serials = <&usart1>, <&lpuart1>;
+		i2cs = <&i2c2>, <&i2c4>;
+		spis = <&spi3>;
+		pwms = <>;
+
+		io-channels =	<&adc1 9>,
+				<&adc1 10>,
+				<&adc1 11>,
+				<&adc1 12>,
+				<&adc1 1>,
+				<&adc1 2>;
+
+		dac = <&dac1>;
+		dac-channels = <1>, <2>;
+		dac-resolution = <12>;
+	};
+};
