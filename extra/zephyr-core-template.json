@@ -22,6 +22,9 @@
               "name": "Arduino Nano 33 BLE"
             },
             {
+              "name": "Arduino Opta"
+            },
+            {
               "name": "Arduino Portenta H7"
             },
             {
@@ -41,7 +44,7 @@
             {
               "packager": "zephyr",
               "name": "arm-zephyr-eabi",
-              "version": "0.16.8"
+              "version": "0.17.0"
             },
             {
               "packager": "arduino",
@@ -56,6 +59,11 @@
             {
               "packager": "arduino",
               "name": "zephyr-sketch-tool",
+              "version": "0.1.0"
+            },
+            {
+              "packager": "arduino",
+              "name": "sync-zephyr-artifacts",
               "version": "0.1.0"
             }
           ]
