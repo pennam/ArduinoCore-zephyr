@@ -32,7 +32,7 @@ int EthernetClass::begin(uint8_t *mac, IPAddress ip, IPAddress dns, IPAddress ga
 int EthernetClass::begin(uint8_t *mac, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet, unsigned long timeout, unsigned long responseTimeout) {
     setMACAddress(mac);
 
-    if (!NetworkInterface::setLocalIP(ip, subnet, gateway)) {
+    if (!NetworkInterface::setLocalIPFull(ip, subnet, gateway)) {
         return 0;
     }
 
@@ -72,8 +72,40 @@ void EthernetClass::setMACAddress(const uint8_t *mac_address) {
     }
 }
 
+void EthernetClass::MACAddress(uint8_t *mac_address) {
+    setMACAddress(mac_address);
+}
+
 IPAddress EthernetClass::localIP() {
     return NetworkInterface::localIP();
+}
+
+IPAddress EthernetClass::subnetMask() {
+    return NetworkInterface::subnetMask();
+}
+
+IPAddress EthernetClass::gatewayIP() {
+    return NetworkInterface::gatewayIP();
+}
+
+IPAddress EthernetClass::dnsServerIP() {
+    return NetworkInterface::dnsServerIP();
+}
+
+void EthernetClass::setLocalIP(const IPAddress local_ip) {
+    NetworkInterface::setLocalIP(local_ip);
+}
+
+void EthernetClass::setSubnetMask(const IPAddress subnet) {
+    NetworkInterface::setSubnetMask(subnet);
+}
+
+void EthernetClass::setGatewayIP(const IPAddress gateway) {
+    NetworkInterface::setGatewayIP(gateway);
+}
+
+void EthernetClass::setDnsServerIP(const IPAddress dns_server) {
+    NetworkInterface::setDnsServerIP(dns_server);
 }
 
 EthernetClass Ethernet;

@@ -119,10 +119,6 @@ IPAddress NetworkInterface::dnsServerIP() {
     return arduino::INADDR_NONE;
 }
 
-IPAddress NetworkInterface::dnsIP(int n) {
-    //TODO
-}
-
 void NetworkInterface::setMACAddress(const uint8_t* mac) {
     struct net_eth_addr new_mac;
     struct ethernet_req_params params = { 0 };
@@ -153,7 +149,7 @@ bool NetworkInterface::disconnect() {
     return (net_if_down(netif) == 0);
 }
 
-bool NetworkInterface::setLocalIP(IPAddress ip, IPAddress subnet, IPAddress gateway) {
+bool NetworkInterface::setLocalIPFull(IPAddress ip, IPAddress subnet, IPAddress gateway) {
     struct in_addr ip_addr, subnet_addr, gw_addr;
     
     ip_addr.s_addr = ip;
@@ -173,4 +169,43 @@ bool NetworkInterface::setLocalIP(IPAddress ip, IPAddress subnet, IPAddress gate
     net_if_ipv4_set_gw(netif, &gw_addr);
     LOG_INF("Static IP configured");
     return true;
+}
+
+bool NetworkInterface::setLocalIP(IPAddress ip) {
+    struct in_addr addr;
+    addr.s_addr = ip;
+
+    if (!net_if_ipv4_addr_add(netif, &addr, NET_ADDR_MANUAL, 0)) {
+        LOG_ERR("Failed to set local IP address");
+        return false;
+    }
+
+    LOG_INF("Local IP address set: %s", ip.toString().c_str());
+    return true;
+}
+
+bool NetworkInterface::setSubnetMask(IPAddress subnet) {
+    struct in_addr netmask_addr;
+    netmask_addr.s_addr = subnet;
+
+    if (!net_if_ipv4_set_netmask_by_addr(netif, &netmask_addr, &netmask_addr)) {
+        LOG_ERR("Failed to set subnet mask");
+        return false;
+    }
+
+    LOG_INF("Subnet mask set: %s", subnet.toString().c_str());
+    return true;
+}
+
+bool NetworkInterface::setGatewayIP(IPAddress gateway) {
+    struct in_addr gw_addr;
+    gw_addr.s_addr = gateway;
+
+    net_if_ipv4_set_gw(netif, &gw_addr);
+    LOG_INF("Gateway IP set: %s", gateway.toString().c_str());
+    return true;
+}
+
+bool NetworkInterface::setDnsServerIP(IPAddress dns_server) {
+    return false; // DNS server dynamic configuration is not supported
 }

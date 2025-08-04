@@ -49,16 +49,14 @@ class NetworkInterface {
         IPAddress gatewayIP();
         IPAddress dnsServerIP();
 
-        IPAddress dnsIP(int n = 0);
-
         void setMACAddress(const uint8_t* mac);
-        bool setLocalIP(IPAddress ip, IPAddress subnet, IPAddress gateway);
+        bool setLocalIPFull(IPAddress ip, IPAddress subnet, IPAddress gateway);
+        bool setLocalIP(IPAddress ip);
+        bool setSubnetMask(IPAddress subnet);
+        bool setGatewayIP(IPAddress gateway);
+        bool setDnsServerIP(IPAddress dns_server);
 
         int begin(bool blocking = true, uint32_t additional_event_mask = 0);
 
         bool disconnect();
-
-        // TODO: manual functions for setting IP address, subnet mask, gateway, etc.
-        // net_if_ipv4_set_netmask_by_addr(iface, &addr4, &nm);
-        // net_if_ipv4_addr_add(iface, &addr4, NET_ADDR_MANUAL, 0);
 };

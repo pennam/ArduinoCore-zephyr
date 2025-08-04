@@ -31,6 +31,7 @@ public:
 	int begin(uint8_t *mac, IPAddress ip, IPAddress dns);
 	int begin(uint8_t *mac, IPAddress ip, IPAddress dns, IPAddress gateway);
     int begin(uint8_t *mac, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet, unsigned long timeout = 60000, unsigned long responseTimeout = 4000);
+	
 	void init(uint8_t sspin = 10);
 
     void MACAddress(uint8_t *mac_address);
@@ -44,6 +45,7 @@ public:
 	void setSubnetMask(const IPAddress subnet);
 	void setGatewayIP(const IPAddress gateway);
 	void setDnsServerIP(const IPAddress dns_server);
+	
 	void setRetransmissionTimeout(uint16_t milliseconds);
 	void setRetransmissionCount(uint8_t num);
 };
