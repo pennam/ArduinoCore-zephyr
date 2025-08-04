@@ -66,6 +66,14 @@ EthernetHardwareStatus EthernetClass::hardwareStatus() {
     }
 }  
 
+int EthernetClass::disconnect() {
+    return NetworkInterface::disconnect();
+}
+
+void EthernetClass::end() {
+    disconnect();
+}
+
 void EthernetClass::setMACAddress(const uint8_t *mac_address) {
     if (mac_address != nullptr) {
         NetworkInterface::setMACAddress(mac_address);
