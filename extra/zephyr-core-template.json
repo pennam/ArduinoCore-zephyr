@@ -44,7 +44,7 @@
             {
               "packager": "zephyr",
               "name": "arm-zephyr-eabi",
-              "version": "0.17.0"
+              "version": "0.16.8"
             },
             {
               "packager": "arduino",

@@ -20,5 +20,5 @@ west config manifest.project-filter -- "$HAL_FILTER"
 west update "$@"
 west zephyr-export
 pip install -r ../zephyr/scripts/requirements-base.txt
-west sdk install --version 0.17.0 -t arm-zephyr-eabi
+west sdk install --version 0.16.8 -t arm-zephyr-eabi
 west blobs fetch $NEEDED_HALS
