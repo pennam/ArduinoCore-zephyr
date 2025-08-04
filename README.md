@@ -114,7 +114,11 @@ The most important components of this project are:
 ## 🛠️ Setup a Zephyr build environment
 
 > [!WARNING]  
-> If you checked out this repo before 0.3.2 was released, delete your local copy and clone the repository again following the installation instructions. See [#163](https://github.com/arduino/ArduinoCore-zephyr/issues/163) for more details.
+> If you checked out this repo before 0.3.2 was released, please note that
+> development has switched to the `main` branch; the old `arduino` branch will
+> be removed in the short future. Please follow this
+> [migration guide](https://github.com/arduino/ArduinoCore-zephyr/issues/163)
+> to update your local branches and outstanding PRs.
 
 In this section, we’ll guide you through setting up your environment to work on and update the Zephyr core.
 
@@ -145,17 +149,17 @@ brew install python cmake ninja zstd jq git
 Note: Homebrew’s Python installation already includes `pip`, `setuptools` and `venv`.
 
 ### On Windows
-Building natively on Windows is not currently supported; however, it is possible to setup and build the loader using [WSL](https://learn.microsoft.com/windows/wsl/about). You will need to follow the instructions given above for installing on Ubuntu.
+Building natively on Windows is not currently supported; however, it is possible to setup and build the loader using [WSL](https://learn.microsoft.com/windows/wsl/about). Once you have that installed, you will need to follow these instructions as if you had Ubuntu.
 
-There are two strategies:
+There are two strategies to set up the sources for building the loader on Windows:
 1) Install the sources in the native Windows filesystem (NTFS, FAT32, etc) and within WSL, cd to the root directory where you installed your sources, like: `/mnt/d/github/ArduinoCore-zephyr`.
 2) Install the sources within the WSL file system, like: `~/git/ArduinoCore-zephyr`
 
 There are pros and cons to both strategies:
-1) Builds are relatively very slow, but once done you can use it directly within Arduino. 
-2) Builds are a lot faster, however, you need to copy the resulting build back to somewhere in your windows directory structure. It is this location, that you will add to the Arduino IDE as mentioned below in the section: Using the core in Arduino IDE/CLI.
+1) Builds on the native Windows file system are relatively very slow, but once done, you can use the results directly within the Arduino IDE. 
+2) Builds on WSL's file system are a lot faster, however, you need to copy the resulting build back to somewhere in your Windows directory structure. Use this location in the Arduino IDE as mentioned below in the [Using the Core in Arduino IDE/CLI](#using-the-core-in-arduino-idecli) section.
 
-In either strategy, you may have to update the link: `cores\arduino\api`.
+After `bootstrap.sh` has completed, you may also have to update the `cores\arduino\api` link to the path of the ArduinoCore-API's `api` folder.
 
 ### Run the ```bootstrap``` script
 ```bash
