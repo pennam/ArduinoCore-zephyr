@@ -3,7 +3,7 @@
 set -e
 
 if [ -z "$1" ]; then
-	echo "Usage: $0 VERSION"
+	echo "Usage: $0 VERSION [OUTPUT_FILE]"
 	exit 1
 fi
 
@@ -14,6 +14,7 @@ fi
 
 PACKAGE=ArduinoCore-zephyr
 VERSION=$1
+OUTPUT_FILE=${2:-distrib/${PACKAGE}-${VERSION}.tar.bz2}
 
 # create a temporary platform.txt file with the correct version
 TEMP_PLATFORM=$(mktemp -p . | sed 's/\.\///')
@@ -32,6 +33,6 @@ extra/get_board_details.sh | jq -cr '.[]' | while read -r item; do
 	ls firmwares/zephyr-${variant}.* >> ${TEMP_LIST}
 done
 cat ${TEMP_LIST}
-mkdir -p distrib
-tar -cjhf distrib/${PACKAGE}-${VERSION}.tar.bz2 -X extra/package_core.exc -T ${TEMP_LIST} --transform "s,${TEMP_PLATFORM},platform.txt," --transform "s,^,${PACKAGE}/,"
+mkdir -p $(dirname ${OUTPUT_FILE})
+tar -cjhf ${OUTPUT_FILE} -X extra/package_core.exc -T ${TEMP_LIST} --transform "s,${TEMP_PLATFORM},platform.txt," --transform "s,^,${PACKAGE}/,"
 rm -f ${TEMP_LIST} ${TEMP_PLATFORM}

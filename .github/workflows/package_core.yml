@@ -30,7 +30,7 @@ jobs:
       - name: Initialize Zephyr environment
         run: |
           yes | ./extra/bootstrap.sh -o=--filter=tree:0
-          echo "CORE_TAG=$(git describe --always)" >> "$GITHUB_ENV"
+          echo "CORE_TAG=$(git describe --tags --exact-match || git describe --always)" >> "$GITHUB_ENV"
           echo "CORE_ARTIFACT=ArduinoCore-zephyr-$(git describe --always)" >> "$GITHUB_ENV"
           echo "BOARD_VARIANTS=$(extra/get_board_details.sh | jq -cr 'sort_by(.variant)')" >> "$GITHUB_ENV"
 
@@ -46,7 +46,7 @@ jobs:
 
       - name: Package core
         run: |
-          ./extra/package_core.sh ${{ env.CORE_TAG }}
+          ./extra/package_core.sh ${{ env.CORE_TAG }} distrib/${{ env.CORE_ARTIFACT }}.tar.bz2
 
       - name: Archive core
         uses: actions/upload-artifact@v4
