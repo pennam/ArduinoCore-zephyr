@@ -30,7 +30,7 @@ private:
     static struct net_dhcpv4_option_callback dhcp_cb;
 
     static void event_handler(struct net_mgmt_event_callback *cb,
-                uint32_t mgmt_event,
+                uint64_t mgmt_event,
                 struct net_if *iface)
     {
         int i = 0;
