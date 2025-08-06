@@ -1,7 +1,7 @@
 #include "SocketHelpers.h"
 
 #include <zephyr/logging/log.h>
-LOG_MODULE_DECLARE(sketch, CONFIG_LOG_DEFAULT_LEVEL);
+LOG_MODULE_DECLARE(sketch, LOG_LEVEL_NONE);
 
 struct net_mgmt_event_callback NetworkInterface::mgmt_cb;
 struct net_dhcpv4_option_callback NetworkInterface::dhcp_cb;
