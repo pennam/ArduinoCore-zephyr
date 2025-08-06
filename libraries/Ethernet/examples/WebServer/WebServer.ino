@@ -1,9 +1,8 @@
 /*
   Web Server
 
- A simple web server that shows the value of the analog input pins.
- using an Arduino Wiznet Ethernet shield.
- 
+  A simple web server that shows the value of the analog input pins.
+  To view the page, open a web browser and type the server’s IP address in the address bar.
  */
 
 #include "ZephyrServer.h"
@@ -11,7 +10,7 @@
 #include "ZephyrEthernet.h"
 
 // The IP address will be dependent on your local network:
-IPAddress ip(192, 168, 2, 177);
+IPAddress ip(192, 168, 1, 177);
 
 // Initialize the Ethernet server library
 // with the IP address and port you want to use

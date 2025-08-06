@@ -5,6 +5,28 @@
  to all connected clients but the client the message comes from.
  To use, telnet to your device's IP address and type.
 
+  Usage:
+  1. Upload this sketch to your board.
+  2. Make sure your board is connected to the network and note its IP address.
+  3. From a computer on the same network, open a terminal and connect via Telnet:
+
+  - On macOS or Linux (using netcat if telnet is not available):
+      telnet <board_ip> 23
+      # or, if telnet is missing:
+      nc <board_ip> 23
+
+  - On Windows (Command Prompt):
+      telnet <board_ip> 23
+      # If 'telnet' is not recognized, enable it in "Windows Features".
+
+  4. Type a message and press Enter.
+  Your message will be broadcast to all connected clients except you.
+
+  Example:
+  telnet 192.168.1.177 23
+
+  Press CTRL + ] then 'quit' to exit Telnet.
+
  */
 
 #include "ZephyrServer.h"
@@ -18,22 +40,28 @@ IPAddress myDns(192, 168, 1, 1);
 IPAddress gateway(192, 168, 1, 1);
 IPAddress subnet(255, 255, 255, 0);
 
-
 // telnet defaults to port 23
 ZephyrServer server(23);
 
 ZephyrClient clients[8];
 
 void setup() {
-
-  // initialize the Ethernet device
-  Ethernet.begin(ip, myDns, gateway, subnet);
-
-  // Open serial communications and wait for port to open:
+  // start serial port:
   Serial.begin(9600);
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
+
+  // in Zephyr system check if Ethernet is ready before proceeding to initialize
+  Serial.print("Waiting for link on");
+  while (Ethernet.linkStatus() != LinkON) {
+      Serial.print(".");
+      delay(100);
+  }
+  Serial.println();
+
+  // initialize the Ethernet device
+  Ethernet.begin(ip, myDns, gateway, subnet);
 
   // Check for Ethernet hardware present
   if (Ethernet.hardwareStatus() == EthernetNoHardware) {

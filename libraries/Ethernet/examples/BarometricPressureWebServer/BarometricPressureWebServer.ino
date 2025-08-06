@@ -8,9 +8,6 @@
  This sketch adapted from Nathan Seidle's SCP1000 example for PIC:
  http://www.sparkfun.com/datasheets/Sensors/SCP1000-Testing.zip
 
- TODO: this hardware is long obsolete.  This example program should
- be rewritten to use https://www.sparkfun.com/products/9721
-
  Circuit:
  SCP1000 sensor attached to pins 6,7, and 11 - 13:
  DRDY: pin 6
@@ -18,7 +15,15 @@
  MOSI: pin 11
  MISO: pin 12
  SCK: pin 13
- 
+
+ How it works:
+  1. The board reads temperature and pressure data from the SCP1000 sensor.
+  2. It hosts a simple HTTP server on port 80 that serves the current readings as a web page.
+  3. You can view the readings from any device on the same network via a browser.
+     Open a web browser and go to: http://192.168.1.20/ (Replace with your board's IP address if changed)
+
+ Note: The SCP1000 sensor is long obsolete. For modern projects, consider replacing it
+ with the BMP085/BMP180/BMP280 or similar (e.g. https://www.sparkfun.com/products/9721).
  */
 
 #include "ZephyrServer.h"
@@ -53,14 +58,22 @@ void setup() {
   // start the SPI library:
   SPI.begin();
 
-  // start the Ethernet connection
-  Ethernet.begin(ip);
-
-  // Open serial communications and wait for port to open:
+  // start serial port:
   Serial.begin(9600);
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
+
+  // in Zephyr system check if Ethernet is ready before proceeding to initialize
+  Serial.print("Waiting for link on");
+  while (Ethernet.linkStatus() != LinkON) {
+      Serial.print(".");
+      delay(100);
+  }
+  Serial.println();
+
+  // start the Ethernet connection
+  Ethernet.begin(ip);
 
   // Check for Ethernet hardware present
   if (Ethernet.hardwareStatus() == EthernetNoHardware) {

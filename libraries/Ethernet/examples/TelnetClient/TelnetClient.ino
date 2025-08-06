@@ -1,14 +1,9 @@
-/*
+ /*
   Telnet client
 
- This sketch connects to a a telnet server (http://www.google.com)
- using an Arduino Wiznet Ethernet shield.  You'll need a telnet server
- to test this with.
- Processing's ChatServer example (part of the network library) works well,
- running on port 10002. It can be found as part of the examples
- in the Processing application, available at
- http://processing.org/
- */
+  This sketch connects to a telnet server.
+  You need a telnet server to test this.
+*/
 
 #include "ZephyrClient.h"
 #include "ZephyrEthernet.h"
@@ -16,8 +11,15 @@
 // The IP address will be dependent on your local network:
 IPAddress ip(192, 168, 1, 177);
 
+// Example: To get the IP address of telehack.com (an example telnet server), run in a terminal:
+// ping telehack.com
+// or
+// nslookup telehack.com
+// Then use the returned IP address in the code.
+
 // Enter the IP address of the server you're connecting to:
 IPAddress server(1, 1, 1, 1);
+int port = 23; // Telnet port
 
 // Initialize the Ethernet client library
 // with the IP address and port of the server
@@ -52,7 +54,7 @@ void setup() {
   Serial.println("connecting...");
 
   // if you get a connection, report back via serial:
-  if (client.connect(server, 10002)) {
+  if (client.connect(server, port)) {
     Serial.println("connected");
   } else {
     // if you didn't get a connection to the server:
