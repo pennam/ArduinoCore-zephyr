@@ -239,7 +239,7 @@ portentah7.menu.debug.true.build.zsk_args.debug=-debug
 
 portentah7.build.zephyr_target=arduino_portenta_h7@1.0.0//m7
 portentah7.build.zephyr_args=
-portentah7.build.zephyr_hals=hal_stm32
+portentah7.build.zephyr_hals=hal_stm32 hal_infineon
 portentah7.build.variant=arduino_portenta_h7_stm32h747xx_m7
 portentah7.build.mcu=cortex-m7
 portentah7.build.fpu=-mfpu=fpv5-d16
@@ -471,7 +471,7 @@ opta.menu.debug.true.build.zsk_args.debug=-debug
 
 opta.build.zephyr_target=arduino_opta//m7
 opta.build.zephyr_args=
-opta.build.zephyr_hals=hal_stm32
+opta.build.zephyr_hals=hal_stm32 hal_infineon
 opta.build.variant=arduino_opta_stm32h747xx_m7
 opta.build.mcu=cortex-m7
 opta.build.fpu=-mfpu=fpv5-d16
