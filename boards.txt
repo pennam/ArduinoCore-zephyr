@@ -10,9 +10,7 @@ giga.build.compiler_path={runtime.tools.arm-zephyr-eabi-0.16.8.path}/bin/
 
 giga.menu.debug.false=Standard
 giga.menu.debug.true=Debug
-
-giga.menu.debug.false.postbuild_debug=
-giga.menu.debug.true.postbuild_debug=-debug
+giga.menu.debug.true.build.zsk_args.debug=-debug
 
 giga.build.zephyr_target=arduino_giga_r1//m7
 giga.build.zephyr_args=--shield arduino_giga_display_shield
@@ -74,9 +72,7 @@ nano33ble.build.compiler_path={runtime.tools.arm-zephyr-eabi-0.16.8.path}/bin/
 
 nano33ble.menu.debug.false=Standard
 nano33ble.menu.debug.true=Debug
-
-nano33ble.menu.debug.false.postbuild_debug=
-nano33ble.menu.debug.true.postbuild_debug=-debug
+nano33ble.menu.debug.true.build.zsk_args.debug=-debug
 
 nano33ble.build.zephyr_target=arduino_nano_33_ble//sense
 nano33ble.build.zephyr_args=
@@ -136,9 +132,7 @@ ek_ra8d1.build.compiler_path={runtime.tools.arm-zephyr-eabi-0.16.8.path}/bin/
 
 ek_ra8d1.menu.debug.false=Standard
 ek_ra8d1.menu.debug.true=Debug
-
-ek_ra8d1.menu.debug.false.postbuild_debug=
-ek_ra8d1.menu.debug.true.postbuild_debug=-debug
+ek_ra8d1.menu.debug.true.build.zsk_args.debug=-debug
 
 ek_ra8d1.build.zephyr_target=ek_ra8d1
 ek_ra8d1.build.zephyr_args=
@@ -192,9 +186,7 @@ frdm_mcxn947.build.compiler_path={runtime.tools.arm-zephyr-eabi-0.16.8.path}/bin
 
 frdm_mcxn947.menu.debug.false=Standard
 frdm_mcxn947.menu.debug.true=Debug
-
-frdm_mcxn947.menu.debug.false.postbuild_debug=
-frdm_mcxn947.menu.debug.true.postbuild_debug=-debug
+frdm_mcxn947.menu.debug.true.build.zsk_args.debug=-debug
 
 frdm_mcxn947.build.zephyr_target=frdm_mcxn947//cpu0
 frdm_mcxn947.build.zephyr_args=
@@ -243,9 +235,7 @@ portentah7.build.compiler_path={runtime.tools.arm-zephyr-eabi-0.16.8.path}/bin/
 
 portentah7.menu.debug.false=Standard
 portentah7.menu.debug.true=Debug
-
-portentah7.menu.debug.false.postbuild_debug=
-portentah7.menu.debug.true.postbuild_debug=-debug
+portentah7.menu.debug.true.build.zsk_args.debug=-debug
 
 portentah7.build.zephyr_target=arduino_portenta_h7@1.0.0//m7
 portentah7.build.zephyr_args=
@@ -307,9 +297,7 @@ frdm_rw612.build.compiler_path={runtime.tools.arm-zephyr-eabi-0.16.8.path}/bin/
 
 frdm_rw612.menu.debug.false=Standard
 frdm_rw612.menu.debug.true=Debug
-
-frdm_rw612.menu.debug.false.postbuild_debug=
-frdm_rw612.menu.debug.true.postbuild_debug=-debug
+frdm_rw612.menu.debug.true.build.zsk_args.debug=-debug
 
 frdm_rw612.build.zephyr_target=frdm_rw612
 frdm_rw612.build.zephyr_args=
@@ -357,9 +345,7 @@ niclasense.build.compiler_path={runtime.tools.arm-zephyr-eabi-0.16.8.path}/bin/
 
 niclasense.menu.debug.false=Standard
 niclasense.menu.debug.true=Debug
-
-niclasense.menu.debug.false.postbuild_debug=
-niclasense.menu.debug.true.postbuild_debug=-debug
+niclasense.menu.debug.true.build.zsk_args.debug=-debug
 
 niclasense.build.zephyr_target=arduino_nicla_sense_me
 niclasense.build.zephyr_args=
@@ -481,9 +467,7 @@ opta.build.compiler_path={runtime.tools.arm-zephyr-eabi-0.16.8.path}/bin/
 
 opta.menu.debug.false=Standard
 opta.menu.debug.true=Debug
-
-opta.menu.debug.false.postbuild_debug=
-opta.menu.debug.true.postbuild_debug=-debug
+opta.menu.debug.true.build.zsk_args.debug=-debug
 
 opta.build.zephyr_target=arduino_opta//m7
 opta.build.zephyr_args=
