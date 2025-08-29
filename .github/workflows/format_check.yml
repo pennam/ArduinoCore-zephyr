@@ -42,9 +42,7 @@ jobs:
           - check: 'loader/'
             exclude: 'loader/llext_exports\.c$'
           - check: 'libraries/'
-            exclude: 'examples'
-            exclude: 'extras'
-            exclude: 'ea_malloc'
+            exclude: '(examples|extras|ea_malloc)'
       fail-fast: false
 
     steps:
