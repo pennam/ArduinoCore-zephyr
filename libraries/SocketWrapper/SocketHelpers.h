@@ -20,43 +20,43 @@
 #define DHCP_OPTION_NTP (42)
 
 class NetworkInterface {
-    private:
-        uint8_t ntp_server[4];
-        static struct net_mgmt_event_callback mgmt_cb;
-        static struct net_dhcpv4_option_callback dhcp_cb;
+private:
+	uint8_t ntp_server[4];
+	static struct net_mgmt_event_callback mgmt_cb;
+	static struct net_dhcpv4_option_callback dhcp_cb;
 
-        static void event_handler(struct net_mgmt_event_callback *cb,
-                    uint64_t mgmt_event,
-                    struct net_if *iface);
+	static void event_handler(struct net_mgmt_event_callback *cb, uint64_t mgmt_event,
+							  struct net_if *iface);
 
-        static void option_handler(struct net_dhcpv4_option_callback *cb,
-                    size_t length,
-                    enum net_dhcpv4_msg_type msg_type,
-                    struct net_if *iface);
+	static void option_handler(struct net_dhcpv4_option_callback *cb, size_t length,
+							   enum net_dhcpv4_msg_type msg_type, struct net_if *iface);
 
-    protected:
-        struct net_if *netif = nullptr;
-        int dhcp();
-        void enable_dhcpv4_server(struct net_if *netif, char* _netmask = "255.255.255.0");
+protected:
+	struct net_if *netif = nullptr;
+	int dhcp();
+	void enable_dhcpv4_server(struct net_if *netif, char *_netmask = "255.255.255.0");
 
-    public:
-        NetworkInterface() {}
-        ~NetworkInterface() {}
+public:
+	NetworkInterface() {
+	}
 
-        IPAddress localIP();
+	~NetworkInterface() {
+	}
 
-        IPAddress subnetMask();
-        IPAddress gatewayIP();
-        IPAddress dnsServerIP();
+	IPAddress localIP();
 
-        void setMACAddress(const uint8_t* mac);
-        bool setLocalIPFull(IPAddress ip, IPAddress subnet, IPAddress gateway);
-        bool setLocalIP(IPAddress ip);
-        bool setSubnetMask(IPAddress subnet);
-        bool setGatewayIP(IPAddress gateway);
-        bool setDnsServerIP(IPAddress dns_server);
+	IPAddress subnetMask();
+	IPAddress gatewayIP();
+	IPAddress dnsServerIP();
 
-        int begin(bool blocking = true, uint32_t additional_event_mask = 0);
+	void setMACAddress(const uint8_t *mac);
+	bool setLocalIPFull(IPAddress ip, IPAddress subnet, IPAddress gateway);
+	bool setLocalIP(IPAddress ip);
+	bool setSubnetMask(IPAddress subnet);
+	bool setGatewayIP(IPAddress gateway);
+	bool setDnsServerIP(IPAddress dns_server);
 
-        bool disconnect();
+	int begin(bool blocking = true, uint32_t additional_event_mask = 0);
+
+	bool disconnect();
 };
