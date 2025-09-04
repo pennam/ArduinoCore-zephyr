@@ -12,6 +12,12 @@
 #include <ZephyrClient.h>
 #include "ZephyrEthernet.h"
 
+// assign a MAC address for the Ethernet controller.
+// fill in your address here:
+byte mac[] = {
+  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
+};
+
 // Set the static IP address to use if the DHCP fails to assign
 IPAddress ip(192, 168, 0, 177);
 IPAddress myDns(192, 168, 0, 1);
@@ -42,7 +48,7 @@ void setup() {
 
   // start the Ethernet connection:
   Serial.println("Initialize Ethernet with DHCP:");
-  if (Ethernet.begin() == 0) {
+  if (Ethernet.begin(mac) == 0) {
     Serial.println("Failed to configure Ethernet using DHCP");
     // Check for Ethernet hardware present
     if (Ethernet.hardwareStatus() == EthernetNoHardware) {
@@ -54,8 +60,8 @@ void setup() {
     if (Ethernet.linkStatus() == LinkOFF) {
       Serial.println("Ethernet cable is not connected.");
     }
-    // try to congifure using IP address instead of DHCP:
-    Ethernet.begin(ip, myDns);
+    // try to configure using IP address instead of DHCP:
+    Ethernet.begin(mac, ip, myDns);
     Serial.print("My IP address: ");
     Serial.println(Ethernet.localIP());
   } else {
@@ -86,7 +92,7 @@ void loop() {
 // this method makes a HTTP connection to the server:
 void httpRequest() {
   // close any connection before send a new request.
-  // This will free the socket on the WiFi shield
+  // This will free the socket on the Ethernet shield
   client.stop();
 
   // if there's a successful connection:
@@ -106,7 +112,3 @@ void httpRequest() {
     Serial.println("connection failed");
   }
 }
-
-
-
-
