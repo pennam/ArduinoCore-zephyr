@@ -25,7 +25,7 @@ IPAddress myDns(192, 168, 0, 1);
 // initialize the library instance:
 ZephyrClient client;
 
-char server[] = "www.arduino.cc";  // also change the Host line in httpRequest()
+char server[] = "arduino.tips";  // also change the Host line in httpRequest()
 //IPAddress server(64,131,82,241);
 
 unsigned long lastConnectionTime = 0;           // last time you connected to the server, in milliseconds
@@ -99,8 +99,9 @@ void httpRequest() {
   if (client.connect(server, 80)) {
     Serial.println("connecting...");
     // send the HTTP GET request:
-    client.println("GET /latest.txt HTTP/1.1");
-    client.println("Host: www.arduino.cc");
+    client.println("GET /asciilogo.txt HTTP/1.1");
+    client.print("Host: ");
+    client.println(server); 
     client.println("User-Agent: arduino-ethernet");
     client.println("Connection: close");
     client.println();

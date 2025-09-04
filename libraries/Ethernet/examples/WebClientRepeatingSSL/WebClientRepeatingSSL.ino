@@ -12,7 +12,7 @@
 // initialize the library instance:
 ZephyrSSLClient client;
 
-char server[] = "www.arduino.cc";
+char server[] = "arduino.tips";
 int port = 443;
 // IPAddress server(64,131,82,241);
 
@@ -93,7 +93,7 @@ void httpRequest()
     if (client.connect(server, port)) {
         Serial.println("connecting...");
         // send the HTTP GET request:
-        client.println("GET /latest.txt HTTP/1.1");
+        client.println("GET /asciilogo.txt HTTP/1.1");
         client.print("Host: ");
         client.println(server);
         client.println("User-Agent: arduino-ethernet");
