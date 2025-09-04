@@ -9,7 +9,12 @@
 #include "ZephyrClient.h"
 #include "ZephyrEthernet.h"
 
+// Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network:
+byte mac[] = {
+  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
+};
+
 IPAddress ip(192, 168, 1, 177);
 
 // Initialize the Ethernet server library
@@ -33,7 +38,7 @@ void setup() {
   }
 
   // start the Ethernet connection and the server:
-  Ethernet.begin(ip);
+  Ethernet.begin(mac, ip);
 
   // Check for Ethernet hardware present
   if (Ethernet.hardwareStatus() == EthernetNoHardware) {
@@ -58,17 +63,17 @@ void loop() {
   ZephyrClient client = server.accept();
   if (client) {
     Serial.println("new client");
-    // an http request ends with a blank line
-    boolean currentLineIsBlank = true;
+    // an HTTP request ends with a blank line
+    bool currentLineIsBlank = true;
     while (client.connected()) {
       if (client.available()) {
         char c = client.read();
         Serial.write(c);
         // if you've gotten to the end of the line (received a newline
-        // character) and the line is blank, the http request has ended,
+        // character) and the line is blank, the HTTP request has ended,
         // so you can send a reply
         if (c == '\n' && currentLineIsBlank) {
-          // send a standard http response header
+          // send a standard HTTP response header
           client.println("HTTP/1.1 200 OK");
           client.println("Content-Type: text/html");
           client.println("Connection: close");  // the connection will be closed after completion of the response
@@ -104,4 +109,3 @@ void loop() {
     Serial.println("client disconnected");
   }
 }
-
