@@ -37,7 +37,7 @@ public:
 
         NetworkInterface::begin(false, NET_EVENT_WIFI_MASK);
         if (blocking) {
-            net_mgmt_event_wait_on_iface(sta_iface, NET_EVENT_WIFI_CONNECT_RESULT, NULL, NULL, NULL, K_FOREVER);
+            //net_mgmt_event_wait_on_iface(sta_iface, NET_EVENT_WIFI_CONNECT_RESULT, NULL, NULL, NULL, K_FOREVER);
         }
 
         return status();
