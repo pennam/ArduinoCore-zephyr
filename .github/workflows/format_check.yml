@@ -4,11 +4,6 @@ on:
   push:
     branches:
       - 'main'
-    paths:
-      - '**/*.c'
-      - '**/*.cpp'
-      - '**/*.h'
-      - '**/*.hpp'
 
   pull_request:
     types:
@@ -18,43 +13,37 @@ on:
       - synchronize
     branches:
       - 'main'
-    paths:
-      - '**/*.c'
-      - '**/*.cpp'
-      - '**/*.h'
-      - '**/*.hpp'
-
-  workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
 
 jobs:
-  format-check:
+  verify-format:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        path:
-          - check: 'cores/arduino/'
-            exclude: 'cores/arduino/api/'
-          - check: 'loader/'
-            exclude: 'loader/llext_exports\.c$'
-          - check: 'libraries/'
-            exclude: '(examples|extras|ea_malloc)'
-      fail-fast: false
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           submodules: false
           persist-credentials: false
-
+      - name: Get changed source files that need format check
+        id: changed-files
+        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46.0.5
+        with:
+          files: |
+            cores/arduino/**/*.{c,cpp,h,hpp,ino}
+            loader/**/*.{c,cpp,h,hpp,ino}
+            libraries/**/*.{c,cpp,h,hpp,ino}
+          files_ignore: |
+            cores/arduino/api/**
+            loader/llext_exports.c
+            libraries/examples/**
+            libraries/extras/**
+            libraries/ea_malloc/**
+          write_output_files: true
+      - name: List changed files
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: cat .github/outputs/all_changed_files.txt
       - name: Run clang-format check
-        uses: jidicula/clang-format-action@v4.15.0
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: pillo79/clang-format-action@05f671e71f0758aba4d3c9dbb0ee81bc5f0137c6
         with:
           clang-format-version: '19'
-          check-path: ${{ matrix.path['check'] }}
-          exclude-regex: ${{ matrix.path['exclude'] }}
+          check-files-from: .github/outputs/all_changed_files.txt
