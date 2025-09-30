@@ -28,15 +28,22 @@ jobs:
           persist-credentials: false
           path: subfolder
 
-      - name: Fix module path
+      - name: Fix module path, list needed HALs
         run: |
           mkdir -p $(dirname $MODULE_PATH) && mv subfolder $MODULE_PATH
+          NEEDED_HALS=$(grep 'build.zephyr_hals=' $MODULE_PATH/boards.txt | cut -d '=' -f 2 | xargs -n 1 echo | sort -u)
+          HAL_FILTER="-hal_.*"
+          for hal in $NEEDED_HALS; do
+            HAL_FILTER="$HAL_FILTER,+$hal"
+          done
+          echo "HAL_FILTER=$HAL_FILTER" | tee -a $GITHUB_ENV
 
       - name: Setup Zephyr project
         uses: zephyrproject-rtos/action-zephyr-setup@v1
         with:
           toolchains: arm-zephyr-eabi
           manifest-file-name: ${{ env.MODULE_PATH }}/west.yml
+          west-project-filter: ${{ env.HAL_FILTER }}
 
       - name: Add manifest path as module
         run: |
