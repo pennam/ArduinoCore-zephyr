@@ -44,6 +44,7 @@ jobs:
           toolchains: arm-zephyr-eabi
           manifest-file-name: ${{ env.MODULE_PATH }}/west.yml
           west-project-filter: ${{ env.HAL_FILTER }}
+          enable-ccache: false
 
       - name: Add manifest path as module
         run: |
