@@ -14,7 +14,7 @@ jobs:
     outputs:
       CORE_TAG: ${{ env.CORE_TAG }}
       CORE_ARTIFACT: ${{ env.CORE_ARTIFACT }}
-      BOARD_VARIANTS: ${{ env.BOARD_VARIANTS }}
+      ALL_BOARD_DATA: ${{ env.ALL_BOARD_DATA }}
     steps:
       - name: Install OS dependencies
         working-directory: /opt
@@ -34,7 +34,7 @@ jobs:
           yes | ./extra/bootstrap.sh -o=--filter=tree:0
           echo "CORE_TAG=$(git describe --tags --exact-match || git describe --always)" >> "$GITHUB_ENV"
           echo "CORE_ARTIFACT=ArduinoCore-zephyr-$(git describe --always)" >> "$GITHUB_ENV"
-          echo "BOARD_VARIANTS=$(extra/get_board_details.sh | jq -cr 'sort_by(.variant)')" >> "$GITHUB_ENV"
+          echo "ALL_BOARD_DATA=$(extra/get_board_details.sh | jq -cr 'sort_by(.variant)')" >> "$GITHUB_ENV"
 
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1.2
@@ -48,7 +48,7 @@ jobs:
 
       - name: Package core
         run: |
-          ./extra/package_core.sh ${{ env.CORE_TAG }} distrib/${{ env.CORE_ARTIFACT }}.tar.bz2
+          ./extra/package_core.sh ${CORE_TAG} distrib/${CORE_ARTIFACT}.tar.bz2
 
       - name: Archive core
         uses: actions/upload-artifact@v4
@@ -63,19 +63,21 @@ jobs:
     strategy:
       matrix:
         include:
-          ${{ fromJSON( needs.package-core.outputs.BOARD_VARIANTS ) }}
+          ${{ fromJSON( needs.package-core.outputs.ALL_BOARD_DATA ) }}
       fail-fast: false
     env:
+      PLAT: arduino:zephyr
       FQBN: arduino:zephyr:${{ matrix.board }}
-      REPORT_FILE: arduino-zephyr-${{ matrix.board }}.json
+      CORE_ARTIFACT: ${{ needs.package-core.outputs.CORE_ARTIFACT }}
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: ${{ needs.package-core.outputs.CORE_ARTIFACT }}
+          name: ${{ env.CORE_ARTIFACT }}
 
       - name: Set up core
         run: |
-          tar xf ${{ needs.package-core.outputs.CORE_ARTIFACT }}.tar.bz2
+          tar xf ${CORE_ARTIFACT}.tar.bz2
+          echo "REPORT_FILE=$(echo ${FQBN} | tr ':' '-').json" >> $GITHUB_ENV
 
       - name: Create Blink sketch
         run: |
@@ -90,7 +92,7 @@ jobs:
             # Use Board Manager to install the latest release of Arduino Zephyr Boards to get the toolchain
             - name: "arduino:zephyr"
               source-url: "https://downloads.arduino.cc/packages/package_zephyr_index.json"
-            - name: "arduino:zephyr"
+            - name: ${{ env.PLAT }}
               source-path: "ArduinoCore-zephyr"
           sketch-paths: Blink
           cli-compile-flags: |
@@ -137,7 +139,7 @@ jobs:
       - test-core
     if: ${{ !cancelled() && needs.package-core.result == 'success' }}
     env:
-      BOARD_VARIANTS: ${{ needs.package-core.outputs.BOARD_VARIANTS }}
+      ALL_BOARD_DATA: ${{ needs.package-core.outputs.ALL_BOARD_DATA }}
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -147,11 +149,11 @@ jobs:
 
       - run: |
           echo "### Core test results:" >> "$GITHUB_STEP_SUMMARY"
-          jq -c '.[]' <<< "$BOARD_VARIANTS" | while read -r BOARD_VARIANT; do
-            BOARD=$(echo $BOARD_VARIANT | jq -cr '.board')
-            VARIANT=$(echo $BOARD_VARIANT | jq -cr '.variant')
+          jq -c '.[]' <<< "$ALL_BOARD_DATA" | while read -r BOARD_DATA; do
+            BOARD=$(echo $BOARD_DATA | jq -cr '.board')
+            VARIANT=$(echo $BOARD_DATA | jq -cr '.variant')
             FQBN="arduino:zephyr:$BOARD"
-            REPORT_FILE="arduino-zephyr-$BOARD.json"
+            REPORT_FILE="$(echo $FQBN | tr ':' '-').json"
             if [ ! -f $REPORT_FILE ]; then
               echo "* :x: $BOARD (`$VARIANT`) - No report found?" >> "$GITHUB_STEP_SUMMARY"
             else
@@ -221,7 +223,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Upload artifact
-        run: aws s3 cp ${{ env.ARTIFACT_FILE }} s3://${{ secrets.S3_BUCKET }}/
+        run: aws s3 cp ${ARTIFACT_FILE} s3://${{ secrets.S3_BUCKET }}/
 
   publish-json:
     name: Publish json
