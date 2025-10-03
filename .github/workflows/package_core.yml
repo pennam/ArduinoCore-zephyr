@@ -13,12 +13,13 @@ jobs:
       CCACHE_IGNOREOPTIONS: -specs=*
     outputs:
       CORE_TAG: ${{ env.CORE_TAG }}
-      CORE_ARTIFACT: ${{ env.CORE_ARTIFACT }}
+      CORE_HASH: ${{ env.CORE_HASH }}
       ALL_BOARD_DATA: ${{ env.ALL_BOARD_DATA }}
     steps:
       - name: Install OS dependencies
         working-directory: /opt
         run: |
+          sudo apt-get remove --purge man-db -y # skips the mandb triggers
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends git cmake wget python3-pip ninja-build ccache
 
@@ -32,9 +33,15 @@ jobs:
       - name: Initialize Zephyr environment
         run: |
           yes | ./extra/bootstrap.sh -o=--filter=tree:0
-          echo "CORE_TAG=$(git describe --tags --exact-match || git describe --always)" >> "$GITHUB_ENV"
-          echo "CORE_ARTIFACT=ArduinoCore-zephyr-$(git describe --always)" >> "$GITHUB_ENV"
-          echo "ALL_BOARD_DATA=$(extra/get_board_details.sh | jq -cr 'sort_by(.variant)')" >> "$GITHUB_ENV"
+          echo "CORE_HASH=$(git describe --always)" >> "$GITHUB_ENV"
+          echo "ALL_BOARD_DATA=$(extra/get_board_details.sh | jq -c 'sort_by(.variant)')" >> "$GITHUB_ENV"
+
+      - name: Map output packages
+        # needs the above env vars to be usable
+        run: |
+          echo "CORE_TAG=$(git describe --tags --exact-match 2>/dev/null || echo $CORE_HASH)" >> "$GITHUB_ENV"
+          echo "ARTIFACTS=$(jq -c '["zephyr"] + (map(.artifact) | unique)' <<< ${ALL_BOARD_DATA})" >> "$GITHUB_ENV"
+          echo "SUB_ARCHES=$(jq -c 'map(.subarch) | unique' <<< ${ALL_BOARD_DATA})" >> "$GITHUB_ENV"
 
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1.2
@@ -48,18 +55,21 @@ jobs:
 
       - name: Package core
         run: |
+          PACKAGE=zephyr
+          CORE_ARTIFACT=ArduinoCore-$PACKAGE-${CORE_HASH}
           ./extra/package_core.sh ${CORE_TAG} distrib/${CORE_ARTIFACT}.tar.bz2
 
       - name: Archive core
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.CORE_ARTIFACT }}
-          path: distrib/${{ env.CORE_ARTIFACT }}.tar.bz2
+          name: ArduinoCore-zephyr-${{ env.CORE_HASH }}
+          path: distrib/*.tar.bz2
 
   test-core:
     name: Test on ${{ matrix.board }}
     runs-on: ubuntu-latest
-    needs: package-core
+    needs:
+      - package-core
     strategy:
       matrix:
         include:
@@ -68,7 +78,7 @@ jobs:
     env:
       PLAT: arduino:zephyr
       FQBN: arduino:zephyr:${{ matrix.board }}
-      CORE_ARTIFACT: ${{ needs.package-core.outputs.CORE_ARTIFACT }}
+      CORE_ARTIFACT: ArduinoCore-zephyr-${{ needs.package-core.outputs.CORE_HASH }}
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -76,7 +86,7 @@ jobs:
 
       - name: Set up core
         run: |
-          tar xf ${CORE_ARTIFACT}.tar.bz2
+          tar xf ${CORE_ARTIFACT}.tar.bz2 # will create ArduinoCore-zephyr/
           echo "REPORT_FILE=$(echo ${FQBN} | tr ':' '-').json" >> $GITHUB_ENV
 
       - name: Create Blink sketch
@@ -209,8 +219,7 @@ jobs:
       id-token: write
       contents: read
     env:
-      CORE_ARTIFACT: ${{ needs.package-core.outputs.CORE_ARTIFACT }}
-      ARTIFACT_FILE: ${{ needs.package-core.outputs.CORE_ARTIFACT }}.tar.bz2
+      CORE_ARTIFACT: ArduinoCore-zephyr-${{ needs.package-core.outputs.CORE_HASH }}
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -223,7 +232,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Upload artifact
-        run: aws s3 cp ${ARTIFACT_FILE} s3://${{ secrets.S3_BUCKET }}/
+        run: aws s3 cp ArduinoCore-*.tar.bz2 s3://${{ secrets.S3_BUCKET }}/
 
   publish-json:
     name: Publish json
@@ -232,12 +241,9 @@ jobs:
     needs:
       - package-core
       - test-core
-      - publish-core
     env:
-      CORE_ARTIFACT: ${{ needs.package-core.outputs.CORE_ARTIFACT }}
-      ARTIFACT_FILE: ${{ needs.package-core.outputs.CORE_ARTIFACT }}.tar.bz2
+      CORE_ARTIFACT: ArduinoCore-zephyr-${{ needs.package-core.outputs.CORE_HASH }}
       CORE_TAG: ${{ needs.package-core.outputs.CORE_TAG }}
-      PACKAGE_INDEX_JSON: zephyr-core-${{ needs.package-core.outputs.CORE_TAG }}.json
     steps:
       - uses: actions/checkout@v4
         with:
@@ -251,12 +257,15 @@ jobs:
         with:
           name: ${{ env.CORE_ARTIFACT }}
 
-        # uses: ARTIFACT_FILE CORE_TAG PACKAGE_INDEX_JSON
       - name: Prepare package index snippet
-        run: ./extra/gen_package_index_json.sh
+        run: |
+          PACKAGE=zephyr
+          ARTIFACT_FILE=ArduinoCore-${PACKAGE}-${CORE_HASH}.tar.bz2
+          PACKAGE_JSON=ArduinoCore-${PACKAGE}-${CORE_TAG}.json
+          ./extra/gen_package_index_json.sh ${CORE_TAG} ${ARTIFACT_FILE} > ${PACKAGE_JSON}
 
       - name: Archive package index snippet
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.PACKAGE_INDEX_JSON }}
-          path: ${{ env.PACKAGE_INDEX_JSON }}
+          name: ArduinoCore-zephyr-${{ env.CORE_TAG }}-jsons
+          path: ArduinoCore-*-${{ env.CORE_TAG }}.json

@@ -8,11 +8,11 @@ if [ -z "$1" ]; then
 fi
 
 if [ ! -f platform.txt ]; then
-	echo "Launch this script from the root core folder as ./extra/package_core.sh VERSION"
+	echo "Launch this script from the root core folder."
 	exit 2
 fi
 
-PACKAGE=ArduinoCore-zephyr
+PACKAGE=zephyr
 VERSION=$1
 OUTPUT_FILE=${2:-distrib/${PACKAGE}-${VERSION}.tar.bz2}
 
@@ -20,19 +20,28 @@ OUTPUT_FILE=${2:-distrib/${PACKAGE}-${VERSION}.tar.bz2}
 TEMP_PLATFORM=$(mktemp -p . | sed 's/\.\///')
 sed -e "s/^version=.*/version=${VERSION}/" platform.txt > ${TEMP_PLATFORM}
 
-TEMP_LIST=$(mktemp)
-echo ${TEMP_PLATFORM} > ${TEMP_LIST}
+declutter_file() {
+	[ -f "$1" ] || return 0
+	cat "$1" | sed -e 's/\s*#.*//' | grep -v '^\s*$'
+}
 
-# import a basic list of files and directories
-cat extra/package_core.inc | sed -e 's/\s*#.*//' | grep -v '^\s*$' >> ${TEMP_LIST}
-
-# add the board-specific files
+# create the list of files and directories to include
+TEMP_INC=$(mktemp -p . | sed 's/\.\///')
+echo ${TEMP_PLATFORM} >> ${TEMP_INC}
+declutter_file extra/package_core.inc >> ${TEMP_INC}
 extra/get_board_details.sh | jq -cr '.[]' | while read -r item; do
 	variant=$(jq -cr '.variant' <<< "$item")
-	echo "variants/${variant}/" >> ${TEMP_LIST}
-	ls firmwares/zephyr-${variant}.* >> ${TEMP_LIST}
+	echo "::info::`${variant}`"
+	echo "variants/${variant}/" >> ${TEMP_INC}
+	ls firmwares/zephyr-${variant}.* >> ${TEMP_INC}
 done
-cat ${TEMP_LIST}
+
+# create the list of files and directories to exclude
+TEMP_EXC=$(mktemp -p . | sed 's/\.\///')
+declutter_file extra/package.exc >> ${TEMP_EXC}
+
 mkdir -p $(dirname ${OUTPUT_FILE})
-tar -cjhf ${OUTPUT_FILE} -X extra/package_core.exc -T ${TEMP_LIST} --transform "s,${TEMP_PLATFORM},platform.txt," --transform "s,^,${PACKAGE}/,"
-rm -f ${TEMP_LIST} ${TEMP_PLATFORM}
+tar -cjhf ${OUTPUT_FILE} -X ${TEMP_EXC} -T ${TEMP_INC} \
+	--transform "s,${TEMP_PLATFORM},platform.txt," \
+	--transform "s,^,ArduinoCore-zephyr/,"
+rm -f ${TEMP_INC} ${TEMP_EXC} ${TEMP_PLATFORM}
