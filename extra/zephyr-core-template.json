@@ -38,6 +38,9 @@
             },
             {
               "name": "NXP FRDM RW612"
+            },
+            {
+              "name": "Arduino UNO Q"
             }
           ],
           "toolsDependencies": [
@@ -65,6 +68,16 @@
               "packager": "arduino",
               "name": "sync-zephyr-artifacts",
               "version": "0.1.0"
+            },
+            {
+              "packager": "arduino",
+              "name": "adb",
+              "version": "32.0.0"
+            },
+            {
+              "packager": "arduino",
+              "name": "remoteocd",
+              "version": "0.0.3-rc.2"
             }
           ]
         }
