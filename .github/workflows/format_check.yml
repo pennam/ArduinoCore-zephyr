@@ -28,9 +28,9 @@ jobs:
         uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46.0.5
         with:
           files: |
-            cores/arduino/**/*.{c,cpp,h,hpp,ino}
-            loader/**/*.{c,cpp,h,hpp,ino}
-            libraries/**/*.{c,cpp,h,hpp,ino}
+            cores/arduino/**/*.{c,cpp,h,hpp}
+            loader/**/*.{c,cpp,h,hpp}
+            libraries/**/*.{c,cpp,h,hpp}
           files_ignore: |
             cores/arduino/api/**
             loader/llext_exports.c
