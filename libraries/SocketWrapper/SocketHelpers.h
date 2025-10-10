@@ -51,10 +51,10 @@ public:
 
 	void setMACAddress(const uint8_t *mac);
 	bool setLocalIPFull(IPAddress ip, IPAddress subnet, IPAddress gateway);
-	bool setLocalIP(IPAddress ip);
-	bool setSubnetMask(IPAddress subnet);
-	bool setGatewayIP(IPAddress gateway);
-	bool setDnsServerIP(IPAddress dns_server);
+	void setLocalIP(const IPAddress ip);
+	void setSubnetMask(const IPAddress subnet);
+	void setGatewayIP(const IPAddress gateway);
+	void setDnsServerIP(const IPAddress dns_server);
 
 	int begin(bool blocking = true, uint32_t additional_event_mask = 0);
 

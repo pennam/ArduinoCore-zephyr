@@ -163,51 +163,40 @@ bool NetworkInterface::setLocalIPFull(IPAddress ip, IPAddress subnet, IPAddress 
 		return false;
 	}
 
-	if (!net_if_ipv4_set_netmask_by_addr(netif, &ip_addr, &subnet_addr)) {
-		LOG_ERR("Failed to set subnet mask");
-		return false;
-	}
-
+	net_if_ipv4_set_netmask(netif, &subnet_addr);
 	net_if_ipv4_set_gw(netif, &gw_addr);
 	LOG_INF("Static IP configured");
 	return true;
 }
 
-bool NetworkInterface::setLocalIP(IPAddress ip) {
+void NetworkInterface::setLocalIP(const IPAddress ip) {
 	struct in_addr addr;
 	addr.s_addr = ip;
 
 	if (!net_if_ipv4_addr_add(netif, &addr, NET_ADDR_MANUAL, 0)) {
 		LOG_ERR("Failed to set local IP address");
-		return false;
+		return;
 	}
-
 	LOG_INF("Local IP address set: %s", ip.toString().c_str());
-	return true;
+	return;
 }
 
-bool NetworkInterface::setSubnetMask(IPAddress subnet) {
+void NetworkInterface::setSubnetMask(const IPAddress subnet) {
 	struct in_addr netmask_addr;
 	netmask_addr.s_addr = subnet;
-
-	if (!net_if_ipv4_set_netmask_by_addr(netif, &netmask_addr, &netmask_addr)) {
-		LOG_ERR("Failed to set subnet mask");
-		return false;
-	}
-
+	net_if_ipv4_set_netmask(netif, &netmask_addr);
 	LOG_INF("Subnet mask set: %s", subnet.toString().c_str());
-	return true;
+	return;
 }
 
-bool NetworkInterface::setGatewayIP(IPAddress gateway) {
+void NetworkInterface::setGatewayIP(const IPAddress gateway) {
 	struct in_addr gw_addr;
 	gw_addr.s_addr = gateway;
-
 	net_if_ipv4_set_gw(netif, &gw_addr);
 	LOG_INF("Gateway IP set: %s", gateway.toString().c_str());
-	return true;
+	return;
 }
 
-bool NetworkInterface::setDnsServerIP(IPAddress dns_server) {
-	return false; // DNS server dynamic configuration is not supported
+void NetworkInterface::setDnsServerIP(const IPAddress dns_server) {
+	return; // DNS server dynamic configuration is not supported
 }

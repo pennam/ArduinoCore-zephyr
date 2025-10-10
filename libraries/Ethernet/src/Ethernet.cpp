@@ -75,12 +75,6 @@ void EthernetClass::end() {
 	disconnect();
 }
 
-void EthernetClass::setMACAddress(const uint8_t *mac_address) {
-	if (mac_address != nullptr) {
-		NetworkInterface::setMACAddress(mac_address);
-	}
-}
-
 IPAddress EthernetClass::localIP() {
 	return NetworkInterface::localIP();
 }
@@ -95,22 +89,6 @@ IPAddress EthernetClass::gatewayIP() {
 
 IPAddress EthernetClass::dnsServerIP() {
 	return NetworkInterface::dnsServerIP();
-}
-
-void EthernetClass::setLocalIP(const IPAddress local_ip) {
-	NetworkInterface::setLocalIP(local_ip);
-}
-
-void EthernetClass::setSubnetMask(const IPAddress subnet) {
-	NetworkInterface::setSubnetMask(subnet);
-}
-
-void EthernetClass::setGatewayIP(const IPAddress gateway) {
-	NetworkInterface::setGatewayIP(gateway);
-}
-
-void EthernetClass::setDnsServerIP(const IPAddress dns_server) {
-	NetworkInterface::setDnsServerIP(dns_server);
 }
 
 EthernetClass Ethernet;
