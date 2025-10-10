@@ -92,6 +92,13 @@ void NetworkInterface::enable_dhcpv4_server(struct net_if *netif, char *_netmask
 	LOG_INF("DHCPv4 server started...\n");
 }
 
+void NetworkInterface::MACAddress(uint8_t *mac) {
+	if (netif == NULL || netif->if_dev == NULL || mac == NULL) {
+		return;
+	}
+	memcpy(mac, netif->if_dev->link_addr.addr, netif->if_dev->link_addr.len);
+}
+
 IPAddress NetworkInterface::localIP() {
 	return IPAddress(netif->config.ip.ipv4->unicast[0].ipv4.address.in_addr.s_addr);
 }

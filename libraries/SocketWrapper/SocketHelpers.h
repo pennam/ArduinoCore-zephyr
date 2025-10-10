@@ -43,8 +43,8 @@ public:
 	~NetworkInterface() {
 	}
 
+	void MACAddress(uint8_t *mac);
 	IPAddress localIP();
-
 	IPAddress subnetMask();
 	IPAddress gatewayIP();
 	IPAddress dnsServerIP();

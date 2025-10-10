@@ -57,7 +57,6 @@ public:
 	int disconnect(void);
 	void end(void);
 
-	void MACAddress(uint8_t *mac_address);
 	IPAddress localIP();
 	IPAddress subnetMask();
 	IPAddress gatewayIP();
