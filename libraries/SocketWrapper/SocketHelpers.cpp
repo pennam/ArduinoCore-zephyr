@@ -116,10 +116,17 @@ IPAddress NetworkInterface::dnsServerIP() {
 }
 
 void NetworkInterface::setMACAddress(const uint8_t *mac) {
-	struct net_eth_addr new_mac;
 	struct ethernet_req_params params = {0};
 
-	memcpy(&params.mac_address, &new_mac, sizeof(struct net_eth_addr));
+	if (mac == nullptr) {
+		LOG_ERR("MAC address pointer is null");
+		return;
+	}
+	memcpy(&params.mac_address, mac, sizeof(struct net_eth_addr));
+	if (!net_eth_is_addr_valid(&params.mac_address)) {
+		LOG_ERR("Invalid MAC address");
+		return;
+	}
 
 	net_if_down(netif); // Ensure the interface is down before changing the MAC address
 
