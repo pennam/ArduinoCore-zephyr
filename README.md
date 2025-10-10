@@ -6,7 +6,12 @@
 
 # 🚧 Arduino Core for Zephyr
 
-This repository contains the official implementation of **Arduino Core** for Zephyr RTOS based board.
+This repository is a downstream fork of the [Arduino Core for Zephyr RTOS-based
+boards](https://github.com/zephyrproject-rtos/arduino-core-zephyr) that
+includes support for Arduino software tools, allowing it to be seamlessly used
+by the [Arduino IDE](https://docs.arduino.cc/software/ide/),
+[Arduino CLI](https://docs.arduino.cc/arduino-cli/) and
+[Arduino AppLab](https://docs.arduino.cc/software/app-lab/).
 
 ## 🧐 What is Zephyr? 
 
