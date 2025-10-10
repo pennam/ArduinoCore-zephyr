@@ -53,8 +53,6 @@ public:
 	}
 
 	void init(uint8_t sspin = 10);
-
-	int disconnect(void);
 	void end(void);
 
 	IPAddress localIP();

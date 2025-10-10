@@ -67,10 +67,6 @@ EthernetHardwareStatus EthernetClass::hardwareStatus() {
 	}
 }
 
-int EthernetClass::disconnect() {
-	return NetworkInterface::disconnect();
-}
-
 void EthernetClass::end() {
 	disconnect();
 }
