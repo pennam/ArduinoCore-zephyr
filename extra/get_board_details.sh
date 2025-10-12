@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 get_boards() {
 	cat boards.txt | sed -e 's/#.*//' | grep -E '^.*\.build\.variant=' | sed -e 's/\.build\.variant=.*//'
 }
@@ -16,6 +18,15 @@ for BOARD in $(get_boards); do
 	TARGET=$(get_board_field $BOARD "build\\.zephyr_target")
 	ARGS=$(get_board_field $BOARD "build\\.zephyr_args")
 	HALS=$(get_board_field $BOARD "build\\.zephyr_hals")
+	ARTIFACT=$(get_board_field $BOARD "build\\.artifact")
+	ARTIFACT=${ARTIFACT:-zephyr_contrib}
+
+	ARTIFACT_JSON=extra/artifacts/$ARTIFACT.json
+	if ! [ -f "$ARTIFACT_JSON" ] ; then
+		echo "error: missing artifact description file $ARTIFACT_JSON" 1>&2
+		exit 1
+	fi
+	SUBARCH=$(jq -r '.architecture' < $ARTIFACT_JSON)
 
 	if [ -z "$TARGET" ] ; then
 		echo "error: missing '$BOARD.build.zephyr_target'" 1>&2
@@ -34,6 +45,8 @@ for BOARD in $(get_boards); do
 	  "target": "$TARGET",
 	  "args": "$ARGS",
 	  "hals": "$HALS",
+	  "artifact": "$ARTIFACT",
+	  "subarch": "$SUBARCH"
 	}
 EOF
 done | jq -crs .

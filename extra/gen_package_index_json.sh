@@ -1,22 +1,42 @@
 #!/bin/bash
 
-if [ $# -ne 2 ] ; then
-	echo "Usage: $0 <core_tag> <artifact_file>"
-  exit 1
+set -e
+
+if [ $# -lt 2 ] || [ $# -gt 3 ] ; then
+	echo "Usage: $0 <artifact> <artifact_file> [<json_file>]" 1>&2
+	exit 1
 fi
 
-PACKAGE=zephyr
-CORE_TAG=$1
+ARTIFACT=$1
 ARTIFACT_FILE=$2
+JSON_FILE=${3:-/dev/stdout}
 
 if [ ! -f "$ARTIFACT_FILE" ] ; then
 	echo "Artifact file '$ARTIFACT_FILE' not found" 1>&2
 	exit 1
 fi
 
-JSON_TEMPLATE="extra/zephyr-core-template.json"
-cat $JSON_TEMPLATE | sed \
-	-e "s/__CORE_TAG__/$(extra/get_core_version.sh)/" \
-	-e "s/__ARTIFACT_FILE__/$(basename $ARTIFACT_FILE)/" \
-	-e "s/__ARTIFACT_HASH__/$(sha256sum $ARTIFACT_FILE | awk '{print $1}')/" \
-	-e "s/__ARTIFACT_SIZE__/$(stat -c %s $ARTIFACT_FILE)/" | jq .
+if [ "$ARTIFACT" == "zephyr" ] ; then
+	exit 0 # no JSON needed for the merged file
+fi
+
+if ! [ -f "extra/artifacts/$ARTIFACT.json" ] ; then
+	echo "Artifact '$ARTIFACT' not found" 1>&2
+	exit 1
+fi
+
+BOARD_NAMES=$(extra/get_board_details.sh | jq -c "map(select(.artifact == \"$ARTIFACT\")) | map({name}) | sort")
+
+jq -s '{ "packages": [ { "platforms": [ .[0]*.[1]*.[2] ] } ] }' \
+	extra/artifacts/_common.json \
+	extra/artifacts/${ARTIFACT}.json \
+	- > "$JSON_FILE" << EOF
+{
+	"version": "$(extra/get_core_version.sh)",
+        "url": "https://downloads.arduino.cc/cores/zephyr/$(basename $ARTIFACT_FILE)",
+	"archiveFileName": "$(basename $ARTIFACT_FILE)",
+	"checksum": "SHA256:$(sha256sum $ARTIFACT_FILE | awk '{print $1}')",
+	"size": "$(stat -c %s $ARTIFACT_FILE)",
+	"boards": $BOARD_NAMES
+}
+EOF
