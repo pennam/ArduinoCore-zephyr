@@ -16,7 +16,7 @@ fi
 
 JSON_TEMPLATE="extra/zephyr-core-template.json"
 cat $JSON_TEMPLATE | sed \
-	-e "s/__CORE_TAG__/$CORE_TAG/" \
+	-e "s/__CORE_TAG__/$(extra/get_core_version.sh)/" \
 	-e "s/__ARTIFACT_FILE__/$(basename $ARTIFACT_FILE)/" \
 	-e "s/__ARTIFACT_HASH__/$(sha256sum $ARTIFACT_FILE | awk '{print $1}')/" \
 	-e "s/__ARTIFACT_SIZE__/$(stat -c %s $ARTIFACT_FILE)/" | jq .

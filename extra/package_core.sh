@@ -18,7 +18,8 @@ OUTPUT_FILE=${2:-distrib/${PACKAGE}-${VERSION}.tar.bz2}
 
 # create a temporary platform.txt file with the correct version
 TEMP_PLATFORM=$(mktemp -p . | sed 's/\.\///')
-sed -e "s/^version=.*/version=${VERSION}/" platform.txt > ${TEMP_PLATFORM}
+cat platform.txt > ${TEMP_PLATFORM}
+sed -ie "s/^version=.*/version=$(extra/get_core_version.sh)/" ${TEMP_PLATFORM}
 
 declutter_file() {
 	[ -f "$1" ] || return 0
