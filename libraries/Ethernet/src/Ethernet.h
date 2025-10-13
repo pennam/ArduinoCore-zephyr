@@ -52,7 +52,6 @@ public:
 		return begin(nullptr, ip, dns, gateway, subnet);
 	}
 
-	void init(uint8_t sspin = 10);
 	void end(void);
 
 	void setRetransmissionTimeout(uint16_t milliseconds);
