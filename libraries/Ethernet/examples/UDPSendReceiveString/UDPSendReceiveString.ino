@@ -28,14 +28,12 @@ void setup() {
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
-  
+
   // in Zephyr system check if Ethernet is ready before proceeding to initialize
-  Serial.print("Waiting for link on");
   while (Ethernet.linkStatus() != LinkON) {
-    Serial.print(".");
+    Serial.println("Waiting for link on");
     delay(100);
   }
-  Serial.println();
 
   // start the Ethernet
   Ethernet.begin(ip);

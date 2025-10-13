@@ -40,8 +40,8 @@ void setup()
 
     // in Zephyr system check if Ethernet is ready before proceeding to initialize
     while (Ethernet.linkStatus() != LinkON) {
-        Serial.println("Waiting for link on");
-        delay(100);
+      Serial.println("Waiting for link on");
+      delay(100);
     }
 
     // start the Ethernet connection:

@@ -35,9 +35,11 @@ void setup() {
       delay(1); // do nothing, no point running without Ethernet hardware
     }
   }
-  while (Ethernet.linkStatus() == LinkOFF) {
-    Serial.println("Ethernet cable is not connected.");
-    delay(500);
+
+  // in Zephyr system check if Ethernet is ready before proceeding to initialize
+  while (Ethernet.linkStatus() != LinkON) {
+    Serial.println("Waiting for link on");
+    delay(100);
   }
 
   // start the Ethernet connection:
