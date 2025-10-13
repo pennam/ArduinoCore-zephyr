@@ -28,14 +28,14 @@ ZephyrClient client;
 char server[] = "arduino.tips";  // also change the Host line in httpRequest()
 //IPAddress server(64,131,82,241);
 
-unsigned long lastConnectionTime = 0;           // last time you connected to the server, in milliseconds
-const unsigned long postingInterval = 10*1000;  // delay between updates, in milliseconds
+unsigned long lastConnectionTime = 0;             // last time you connected to the server, in milliseconds
+const unsigned long postingInterval = 10 * 1000;  // delay between updates, in milliseconds
 
 void setup() {
   // start serial port:
   Serial.begin(9600);
   while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
+    ;  // wait for serial port to connect. Needed for native USB port only
   }
 
   // in Zephyr system check if Ethernet is ready before proceeding to initialize
@@ -52,7 +52,7 @@ void setup() {
     if (Ethernet.hardwareStatus() == EthernetNoHardware) {
       Serial.println("Ethernet shield was not found.  Sorry, can't run without hardware. :(");
       while (true) {
-        delay(1); // do nothing, no point running without Ethernet hardware
+        delay(1);  // do nothing, no point running without Ethernet hardware
       }
     }
     if (Ethernet.linkStatus() == LinkOFF) {
@@ -84,7 +84,6 @@ void loop() {
   if (millis() - lastConnectionTime > postingInterval) {
     httpRequest();
   }
-
 }
 
 // this method makes a HTTP connection to the server:
@@ -99,7 +98,7 @@ void httpRequest() {
     // send the HTTP GET request:
     client.println("GET /asciilogo.txt HTTP/1.1");
     client.print("Host: ");
-    client.println(server); 
+    client.println(server);
     client.println("User-Agent: arduino-ethernet");
     client.println("Connection: close");
     client.println();

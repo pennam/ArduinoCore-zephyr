@@ -1,4 +1,4 @@
- /*
+/*
   Telnet client
 
   This sketch connects to a telnet server.
@@ -19,7 +19,7 @@ IPAddress ip(192, 168, 1, 177);
 
 // Enter the IP address of the server you're connecting to:
 IPAddress server(1, 1, 1, 1);
-int port = 23; // Telnet port
+int port = 23;  // Telnet port
 
 // Initialize the Ethernet client library
 // with the IP address and port of the server
@@ -32,7 +32,7 @@ void setup() {
   if (Ethernet.hardwareStatus() == EthernetNoHardware) {
     Serial.println("Ethernet shield was not found.  Sorry, can't run without hardware. :(");
     while (true) {
-      delay(1); // do nothing, no point running without Ethernet hardware
+      delay(1);  // do nothing, no point running without Ethernet hardware
     }
   }
 
@@ -48,7 +48,7 @@ void setup() {
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
   while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
+    ;  // wait for serial port to connect. Needed for native USB port only
   }
 
   // give the Ethernet shield a second to initialize:
@@ -92,7 +92,3 @@ void loop() {
     }
   }
 }
-
-
-
-

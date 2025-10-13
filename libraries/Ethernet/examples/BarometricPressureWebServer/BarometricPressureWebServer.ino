@@ -61,7 +61,7 @@ void setup() {
   // start serial port:
   Serial.begin(9600);
   while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
+    ;  // wait for serial port to connect. Needed for native USB port only
   }
 
   // in Zephyr system check if Ethernet is ready before proceeding to initialize
@@ -77,7 +77,7 @@ void setup() {
   if (Ethernet.hardwareStatus() == EthernetNoHardware) {
     Serial.println("Ethernet shield was not found.  Sorry, can't run without hardware. :(");
     while (true) {
-      delay(1); // do nothing, no point running without Ethernet hardware
+      delay(1);  // do nothing, no point running without Ethernet hardware
     }
   }
   if (Ethernet.linkStatus() == LinkOFF) {
@@ -101,7 +101,6 @@ void setup() {
 
   //Set the sensor to high resolution mode tp start readings:
   writeRegister(0x03, 0x0A);
-
 }
 
 void loop() {
@@ -130,8 +129,8 @@ void getData() {
   temperature = (float)tempData / 20.0;
 
   //Read the pressure data highest 3 bits:
-  byte  pressureDataHigh = readRegister(0x1F, 1);
-  pressureDataHigh &= 0b00000111; //you only needs bits 2 to 0
+  byte pressureDataHigh = readRegister(0x1F, 1);
+  pressureDataHigh &= 0b00000111;  //you only needs bits 2 to 0
 
   //Read the pressure data lower 16 bits:
   unsigned int pressureDataLow = readRegister(0x20, 2);
@@ -196,13 +195,13 @@ void writeRegister(byte registerName, byte registerValue) {
   // of the byte:
   registerName <<= 2;
   // command (read or write) goes in the lower two bits:
-  registerName |= 0b00000010; //Write command
+  registerName |= 0b00000010;  //Write command
 
   // take the chip select low to select the device:
   digitalWrite(chipSelectPin, LOW);
 
-  SPI.transfer(registerName); //Send register location
-  SPI.transfer(registerValue); //Send value to record into register
+  SPI.transfer(registerName);   //Send register location
+  SPI.transfer(registerValue);  //Send value to record into register
 
   // take the chip select high to de-select:
   digitalWrite(chipSelectPin, HIGH);
@@ -211,14 +210,14 @@ void writeRegister(byte registerName, byte registerValue) {
 
 //Read register from the SCP1000:
 unsigned int readRegister(byte registerName, int numBytes) {
-  byte inByte = 0;           // incoming from  the SPI read
-  unsigned int result = 0;   // result to return
+  byte inByte = 0;          // incoming from  the SPI read
+  unsigned int result = 0;  // result to return
 
   // SCP1000 expects the register name in the upper 6 bits
   // of the byte:
-  registerName <<=  2;
+  registerName <<= 2;
   // command (read or write) goes in the lower two bits:
-  registerName &= 0b11111100; //Read command
+  registerName &= 0b11111100;  //Read command
 
   // take the chip select low to select the device:
   digitalWrite(chipSelectPin, LOW);

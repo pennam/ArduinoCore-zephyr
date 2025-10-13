@@ -13,7 +13,7 @@
 // The IP address will be dependent on your local network:
 IPAddress ip(192, 168, 1, 177);
 
-unsigned int localPort = 8888;      // local port to listen on
+unsigned int localPort = 8888;  // local port to listen on
 
 // buffers for receiving and sending data
 char packetBuffer[UDP_TX_PACKET_MAX_SIZE];  // buffer to hold incoming packet,
@@ -26,7 +26,7 @@ void setup() {
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
   while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
+    ;  // wait for serial port to connect. Needed for native USB port only
   }
 
   // in Zephyr system check if Ethernet is ready before proceeding to initialize
@@ -42,7 +42,7 @@ void setup() {
   if (Ethernet.hardwareStatus() == EthernetNoHardware) {
     Serial.println("Ethernet shield was not found.  Sorry, can't run without hardware. :(");
     while (true) {
-      delay(1); // do nothing, no point running without Ethernet hardware
+      delay(1);  // do nothing, no point running without Ethernet hardware
     }
   }
   if (Ethernet.linkStatus() == LinkOFF) {
@@ -61,7 +61,7 @@ void loop() {
     Serial.println(packetSize);
     Serial.print("From ");
     IPAddress remote = Udp.remoteIP();
-    for (int i=0; i < 4; i++) {
+    for (int i = 0; i < 4; i++) {
       Serial.print(remote[i], DEC);
       if (i < 3) {
         Serial.print(".");
@@ -123,5 +123,3 @@ void loop() {
  println();
  }
  */
-
-

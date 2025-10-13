@@ -49,7 +49,7 @@ void setup() {
   // start serial port:
   Serial.begin(9600);
   while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
+    ;  // wait for serial port to connect. Needed for native USB port only
   }
 
   // in Zephyr system check if Ethernet is ready before proceeding to initialize
@@ -65,7 +65,7 @@ void setup() {
   if (Ethernet.hardwareStatus() == EthernetNoHardware) {
     Serial.println("Ethernet shield was not found.  Sorry, can't run without hardware. :(");
     while (true) {
-      delay(1); // do nothing, no point running without Ethernet hardware
+      delay(1);  // do nothing, no point running without Ethernet hardware
     }
   }
   if (Ethernet.linkStatus() == LinkOFF) {
@@ -83,7 +83,7 @@ void loop() {
   // check for any new client connecting, and say hello (before any incoming data)
   ZephyrClient newClient = server.accept();
   if (newClient) {
-    for (byte i=0; i < 8; i++) {
+    for (byte i = 0; i < 8; i++) {
       if (!clients[i]) {
         Serial.print("We have a new client #");
         Serial.println(i);
@@ -98,13 +98,13 @@ void loop() {
   }
 
   // check for incoming data from all clients
-  for (byte i=0; i < 8; i++) {
+  for (byte i = 0; i < 8; i++) {
     if (clients[i] && clients[i].available() > 0) {
       // read bytes from a client
       byte buffer[80];
       int count = clients[i].read(buffer, 80);
       // write the bytes to all other connected clients
-      for (byte j=0; j < 8; j++) {
+      for (byte j = 0; j < 8; j++) {
         if (j != i && clients[j].connected()) {
           clients[j].write(buffer, count);
         }
@@ -113,7 +113,7 @@ void loop() {
   }
 
   // stop any clients which disconnect
-  for (byte i=0; i < 8; i++) {
+  for (byte i = 0; i < 8; i++) {
     if (clients[i] && !clients[i].connected()) {
       Serial.print("disconnect client #");
       Serial.println(i);
