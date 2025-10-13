@@ -12,6 +12,10 @@ int EthernetClass::begin(uint8_t *mac, unsigned long timeout, unsigned long resp
 	return NetworkInterface::begin();
 }
 
+int EthernetClass::maintain() {
+	return 0; // DHCP_CHECK_NONE
+}
+
 int EthernetClass::begin(uint8_t *mac, IPAddress ip) {
 	IPAddress dns = ip;
 	dns[3] = 1;
