@@ -80,5 +80,9 @@ void EthernetClass::end() {
 	disconnect();
 }
 
+void EthernetClass::setRetransmissionTimeout(uint16_t milliseconds) {
+	(void)milliseconds;
+}
+
 EthernetClass Ethernet;
 #endif
