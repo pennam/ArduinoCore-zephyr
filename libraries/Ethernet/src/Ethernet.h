@@ -55,11 +55,6 @@ public:
 	void init(uint8_t sspin = 10);
 	void end(void);
 
-	IPAddress localIP();
-	IPAddress subnetMask();
-	IPAddress gatewayIP();
-	IPAddress dnsServerIP();
-
 	void setRetransmissionTimeout(uint16_t milliseconds);
 	void setRetransmissionCount(uint8_t num);
 };

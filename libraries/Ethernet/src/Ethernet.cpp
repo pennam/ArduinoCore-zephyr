@@ -71,21 +71,5 @@ void EthernetClass::end() {
 	disconnect();
 }
 
-IPAddress EthernetClass::localIP() {
-	return NetworkInterface::localIP();
-}
-
-IPAddress EthernetClass::subnetMask() {
-	return NetworkInterface::subnetMask();
-}
-
-IPAddress EthernetClass::gatewayIP() {
-	return NetworkInterface::gatewayIP();
-}
-
-IPAddress EthernetClass::dnsServerIP() {
-	return NetworkInterface::dnsServerIP();
-}
-
 EthernetClass Ethernet;
 #endif
