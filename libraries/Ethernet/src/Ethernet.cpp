@@ -3,8 +3,13 @@
 #if DT_HAS_COMPAT_STATUS_OKAY(ethernet_phy)
 
 int EthernetClass::begin(uint8_t *mac, unsigned long timeout, unsigned long responseTimeout) {
+	(void)timeout;
+	(void)responseTimeout;
+	if (hardwareStatus() != EthernetOk) {
+		return 0;
+	}
 	setMACAddress(mac);
-	return NetworkInterface::begin(true, 0);
+	return NetworkInterface::begin();
 }
 
 int EthernetClass::begin(uint8_t *mac, IPAddress ip) {
@@ -31,16 +36,16 @@ int EthernetClass::begin(uint8_t *mac, IPAddress ip, IPAddress dns, IPAddress ga
 
 int EthernetClass::begin(uint8_t *mac, IPAddress ip, IPAddress dns, IPAddress gateway,
 						 IPAddress subnet, unsigned long timeout, unsigned long responseTimeout) {
-	setMACAddress(mac);
-
-	if (!NetworkInterface::config(ip, subnet, gateway)) {
+	(void)timeout;
+	(void)responseTimeout;
+	if (hardwareStatus() != EthernetOk) {
 		return 0;
 	}
-
+	setMACAddress(mac);
+	config(ip, dns, gateway, subnet);
 	if (!net_if_is_up(netif)) {
 		net_if_up(netif);
 	}
-
 	return 1;
 }
 
