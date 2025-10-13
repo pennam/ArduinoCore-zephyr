@@ -33,7 +33,7 @@ int EthernetClass::begin(uint8_t *mac, IPAddress ip, IPAddress dns, IPAddress ga
 						 IPAddress subnet, unsigned long timeout, unsigned long responseTimeout) {
 	setMACAddress(mac);
 
-	if (!NetworkInterface::setLocalIPFull(ip, subnet, gateway)) {
+	if (!NetworkInterface::config(ip, subnet, gateway)) {
 		return 0;
 	}
 

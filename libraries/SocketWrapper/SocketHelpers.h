@@ -49,8 +49,9 @@ public:
 	IPAddress gatewayIP();
 	IPAddress dnsServerIP();
 
+	void config(const IPAddress ip, const IPAddress dns_server, const IPAddress gateway,
+				const IPAddress subnet);
 	void setMACAddress(const uint8_t *mac);
-	bool setLocalIPFull(IPAddress ip, IPAddress subnet, IPAddress gateway);
 	void setLocalIP(const IPAddress ip);
 	void setSubnetMask(const IPAddress subnet);
 	void setGatewayIP(const IPAddress gateway);

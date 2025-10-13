@@ -151,22 +151,13 @@ bool NetworkInterface::disconnect() {
 	return (net_if_down(netif) == 0);
 }
 
-bool NetworkInterface::setLocalIPFull(IPAddress ip, IPAddress subnet, IPAddress gateway) {
-	struct in_addr ip_addr, subnet_addr, gw_addr;
-
-	ip_addr.s_addr = ip;
-	subnet_addr.s_addr = subnet;
-	gw_addr.s_addr = gateway;
-
-	if (!net_if_ipv4_addr_add(netif, &ip_addr, NET_ADDR_MANUAL, 0)) {
-		LOG_ERR("Failed to set static IP address");
-		return false;
-	}
-
-	net_if_ipv4_set_netmask(netif, &subnet_addr);
-	net_if_ipv4_set_gw(netif, &gw_addr);
-	LOG_INF("Static IP configured");
-	return true;
+void NetworkInterface::config(const IPAddress ip, const IPAddress dns_server,
+							  const IPAddress gateway, const IPAddress subnet) {
+	setLocalIP(ip);
+	setDnsServerIP(dns_server);
+	setGatewayIP(gateway);
+	setSubnetMask(subnet);
+	return;
 }
 
 void NetworkInterface::setLocalIP(const IPAddress ip) {
