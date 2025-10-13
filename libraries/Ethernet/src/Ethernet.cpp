@@ -84,5 +84,9 @@ void EthernetClass::setRetransmissionTimeout(uint16_t milliseconds) {
 	(void)milliseconds;
 }
 
+void EthernetClass::setRetransmissionCount(uint8_t num) {
+	(void)num;
+}
+
 EthernetClass Ethernet;
 #endif
