@@ -40,7 +40,7 @@ public:
 	NetworkInterface() {
 	}
 
-	~NetworkInterface() {
+	virtual ~NetworkInterface() {
 	}
 
 	void MACAddress(uint8_t *mac);
