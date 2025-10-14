@@ -28,6 +28,12 @@ int port = 23;  // Telnet port
 ZephyrClient client;
 
 void setup() {
+  // Open serial communications and wait for port to open:
+  Serial.begin(9600);
+  while (!Serial) {
+    ;  // wait for serial port to connect. Needed for native USB port only
+  }
+
   // Check for Ethernet hardware present
   if (Ethernet.hardwareStatus() == EthernetNoHardware) {
     Serial.println("Ethernet shield was not found.  Sorry, can't run without hardware. :(");
@@ -44,12 +50,6 @@ void setup() {
 
   // start the Ethernet connection:
   Ethernet.begin(ip);
-
-  // Open serial communications and wait for port to open:
-  Serial.begin(9600);
-  while (!Serial) {
-    ;  // wait for serial port to connect. Needed for native USB port only
-  }
 
   // give the Ethernet shield a second to initialize:
   delay(1000);
