@@ -54,11 +54,8 @@ void setup() {
 }
 
 void loop() {
-  if (Ethernet.linkStatus() != LinkON) {
-    Serial.println(Ethernet.linkStatus());
-    connectEth();
-  }
-  sendNTPpacket(timeServer);  // send an NTP packet to a time server
+  // send an NTP packet to a time server
+  sendNTPpacket(timeServer);
 
   // wait to see if a reply is available
   delay(1000);
@@ -128,36 +125,4 @@ void sendNTPpacket(const char* address) {
   Udp.beginPacket(address, 123);  // NTP requests are to port 123
   Udp.write(packetBuffer, NTP_PACKET_SIZE);
   Udp.endPacket();
-}
-
-void connectEth() {
-  // in Zephyr system check if Ethernet is ready before proceeding to initialize
-  Serial.print("Waiting for link on");
-  while (Ethernet.linkStatus() != LinkON) {
-    Serial.print(".");
-    delay(100);
-  }
-  Serial.println();
-
-  // start the Ethernet connection:
-  Serial.println("Initialize Ethernet with DHCP:");
-  if (Ethernet.begin(nullptr) == 0) {
-    Serial.println("Failed to configure Ethernet using DHCP");
-    // Check for Ethernet hardware present
-    if (Ethernet.hardwareStatus() == EthernetNoHardware) {
-      Serial.println("Ethernet shield was not found.  Sorry, can't run without hardware. :(");
-      while (true) {
-        delay(1);  // do nothing, no point running without Ethernet hardware
-      }
-    }
-    if (Ethernet.linkStatus() == LinkOFF) {
-      Serial.println("Ethernet cable is not connected.");
-    }
-  } else {
-    Serial.print("  DHCP assigned IP ");
-    Serial.println(Ethernet.localIP());
-  }
-
-  Serial.println("You're connected to the network");
-  Serial.println();
 }
