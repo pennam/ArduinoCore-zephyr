@@ -19,6 +19,10 @@ void start_static_threads();
 void __attribute__((weak)) initVariant(void) {
 }
 
+// This function can be overwriten by one library.
+void __attribute__((weak)) __loopHook(void) {
+}
+
 int main(void) {
 #if (DT_NODE_HAS_PROP(DT_PATH(zephyr_user), cdc_acm) &&                                            \
 	 (CONFIG_USB_CDC_ACM || CONFIG_USBD_CDC_ACM_CLASS))
@@ -39,6 +43,7 @@ int main(void) {
 	  // DT_NODE_HAS_PROP(DT_PATH(zephyr_user), serials)
     if (arduino::serialEventRun) arduino::serialEventRun();
 #endif
+		__loopHook();
 	}
 
 	return 0;
@@ -94,7 +99,7 @@ extern "C" __attribute__((section(".entry_point"), used)) void entry_point(struc
 	printk("Sketch Heap start: %p, size %p\n", &kheap_llext_heap, &kheap_llext_heap_size);
 
 	memcpy(&_sdata, &_sidata, (&_edata - &_sdata) * sizeof(uint32_t));
-	memset(&_sbss, 0, &_ebss - &_sbss);
+	memset(&_sbss, 0, (&_ebss - &_sbss) * sizeof(uint32_t));
 	__libc_init_array();
 	main();
 }
