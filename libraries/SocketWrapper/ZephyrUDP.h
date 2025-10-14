@@ -29,6 +29,8 @@
 #include <vector>
 #include <memory>
 
+#define UDP_TX_PACKET_MAX_SIZE 24
+
 class ZephyrUDP : public arduino::UDP {
 private:
 	int _socket;

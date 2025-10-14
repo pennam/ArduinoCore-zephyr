@@ -95,5 +95,9 @@ public:
 	operator bool() {
 		return sock_fd != -1;
 	}
+
+	String remoteIP() {
+		return ZephyrSocketWrapper::remoteIP();
+	}
 	friend class ZephyrServer;
 };
