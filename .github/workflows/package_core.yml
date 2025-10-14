@@ -266,7 +266,7 @@ jobs:
   publish-json:
     name: Publish jsons
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && github.repository == 'arduino/ArduinoCore-zephyr' }}
+    if: ${{ github.repository == 'arduino/ArduinoCore-zephyr' }}
     needs:
       - package-core
       - test-core
