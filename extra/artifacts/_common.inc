@@ -5,8 +5,7 @@
 #       are automatically added by package_core.sh depending on the information
 #       in 'boards.txt', so they should not be included here.
 
-boards.txt
-# platform.txt is added by package_core.sh
+# boards.txt and platform.txt are added by package_core.sh
 programmers.txt
 LICENSE
 README.md

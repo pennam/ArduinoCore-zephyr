@@ -17,6 +17,7 @@ giga.build.zephyr_target=arduino_giga_r1//m7
 giga.build.zephyr_args=--shield arduino_giga_display_shield
 giga.build.zephyr_hals=hal_stm32 hal_infineon
 giga.build.variant=arduino_giga_r1_stm32h747xx_m7
+giga.build.artifact=zephyr_main
 giga.build.mcu=cortex-m7
 giga.build.fpu=-mfpu=fpv5-d16
 giga.build.architecture=cortex-m7
@@ -78,6 +79,7 @@ nano33ble.menu.debug.true.build.zsk_args.debug=-debug
 nano33ble.build.zephyr_target=arduino_nano_33_ble//sense
 nano33ble.build.zephyr_args=
 nano33ble.build.zephyr_hals=hal_nordic
+nano33ble.build.artifact=zephyr_main
 nano33ble.build.variant=arduino_nano_33_ble_nrf52840_sense
 nano33ble.build.mcu=cortex-m4
 nano33ble.build.fpu=-mfpu=fpv4-sp-d16
@@ -126,7 +128,7 @@ nano33ble.debug.cortex-debug.custom.request=attach
 
 ##############################################################################################################
 
-ek_ra8d1.name=EK_RA8D1
+ek_ra8d1.name=Renesas RA8D1 EK
 ek_ra8d1.build.core=arduino
 ek_ra8d1.build.crossprefix=arm-zephyr-eabi-
 ek_ra8d1.build.compiler_path={runtime.tools.arm-zephyr-eabi-0.16.8.path}/bin/
@@ -180,7 +182,7 @@ ek_ra8d1.bootloader.target=R7FA8D1AH
 
 ##############################################################################################################
 
-frdm_mcxn947.name=MCXN947
+frdm_mcxn947.name=NXP FRDM MCXN947
 frdm_mcxn947.build.core=arduino
 frdm_mcxn947.build.crossprefix=arm-zephyr-eabi-
 frdm_mcxn947.build.compiler_path={runtime.tools.arm-zephyr-eabi-0.16.8.path}/bin/
@@ -241,6 +243,7 @@ portentah7.menu.debug.true.build.zsk_args.debug=-debug
 portentah7.build.zephyr_target=arduino_portenta_h7@1.0.0//m7
 portentah7.build.zephyr_args=
 portentah7.build.zephyr_hals=hal_stm32 hal_infineon
+portentah7.build.artifact=zephyr_main
 portentah7.build.variant=arduino_portenta_h7_stm32h747xx_m7
 portentah7.build.mcu=cortex-m7
 portentah7.build.fpu=-mfpu=fpv5-d16
@@ -291,7 +294,7 @@ portentah7.debug.svd_file={runtime.platform.path}/svd/STM32H747_CM7.svd
 
 ##############################################################################################################
 
-frdm_rw612.name=RW612
+frdm_rw612.name=NXP FRDM RW612
 frdm_rw612.build.core=arduino
 frdm_rw612.build.crossprefix=arm-zephyr-eabi-
 frdm_rw612.build.compiler_path={runtime.tools.arm-zephyr-eabi-0.16.8.path}/bin/
@@ -351,6 +354,7 @@ niclasense.menu.debug.true.build.zsk_args.debug=-debug
 niclasense.build.zephyr_target=arduino_nicla_sense_me
 niclasense.build.zephyr_args=
 niclasense.build.zephyr_hals=hal_nordic
+niclasense.build.artifact=zephyr_main
 niclasense.build.variant=arduino_nicla_sense_me_nrf52832
 niclasense.build.mcu=cortex-m4
 niclasense.build.fpu=-mfpu=fpv4-sp-d16
@@ -405,7 +409,7 @@ niclasense.debug.cortex-debug.custom.request=attach
 
 ##########################################################################################
 
-portentac33.name=Portenta C33
+portentac33.name=Arduino Portenta C33
 portentac33.build.core=arduino
 portentac33.build.crossprefix=arm-zephyr-eabi-
 portentac33.build.compiler_path={runtime.tools.arm-zephyr-eabi-0.16.8.path}/bin/
@@ -422,6 +426,7 @@ portentac33.menu.link_mode.static.upload.extension=bin-zsk.bin
 portentac33.build.zephyr_target=arduino_portenta_c33
 portentac33.build.zephyr_args=
 portentac33.build.zephyr_hals=hal_renesas nanopb
+portentac33.build.artifact=zephyr_main
 portentac33.build.variant=arduino_portenta_c33_r7fa6m5bh3cfc
 portentac33.build.mcu=cortex-m33
 portentac33.build.fpu=-mfpu=fpv5-sp-d16
@@ -473,6 +478,7 @@ opta.menu.debug.true.build.zsk_args.debug=-debug
 opta.build.zephyr_target=arduino_opta//m7
 opta.build.zephyr_args=
 opta.build.zephyr_hals=hal_stm32 hal_infineon
+opta.build.artifact=zephyr_main
 opta.build.variant=arduino_opta_stm32h747xx_m7
 opta.build.mcu=cortex-m7
 opta.build.fpu=-mfpu=fpv5-d16
@@ -541,6 +547,8 @@ unoq.menu.flash_mode.ram.openocd_cfg=flash_sketch_ram.cfg
 unoq.build.zephyr_target=arduino_uno_q
 unoq.build.zephyr_args=
 unoq.build.variant=arduino_uno_q_stm32u585xx
+unoq.build.artifact=zephyr_unoq
+unoq.build.subarch=zephyr
 unoq.build.mcu=cortex-m33
 unoq.build.fpu=-mfpu=fpv5-sp-d16
 unoq.build.architecture=cortex-m33

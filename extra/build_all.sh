@@ -27,6 +27,7 @@ fi
 final_result=0
 while read -r item; do
 	board=$(jq -cr '.board' <<< "$item")
+	subarch=$(jq -cr '.subarch' <<< "$item")
 	variant=$(jq -cr '.variant' <<< "$item")
 	target=$(jq -cr '.target' <<< "$item")
 	args=$(jq -cr '.args // ""' <<< "$item")
@@ -36,7 +37,7 @@ while read -r item; do
 		echo "${board} (${variant})"
 		echo "${board} (${variant})" | sed -e 's/./=/g'
 	else
-		echo "::group::=== ${board} (${variant}) ==="
+		echo "::group::=== ${subarch}:${board} (${variant}) ==="
 	fi
 
 	./extra/build.sh "$target" $args
@@ -49,10 +50,10 @@ while read -r item; do
 	else
 		echo "::endgroup::"
 		if [ $result -eq 0 ] ; then
-			echo "- :white_check_mark: \`${variant}\`" >> "$GITHUB_STEP_SUMMARY"
+			echo "- :white_check_mark: \`${variant}\` (${subarch})" >> "$GITHUB_STEP_SUMMARY"
 		else
-			echo "^^$(echo "=== ${board} (${variant}) ===" | sed -e 's/./^/g') FAILED with $result!"
-			echo "- :x: \`${variant}\`" >> "$GITHUB_STEP_SUMMARY"
+			echo "^^$(echo "=== ${subarch}:${board} (${variant}) ===" | sed -e 's/./^/g') FAILED with $result!"
+			echo "- :x: \`${variant}\` (${subarch})" >> "$GITHUB_STEP_SUMMARY"
 		fi
 	fi
 	[ $result -ne 0 ] && ! $FORCE && exit $result
