@@ -261,7 +261,10 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Upload artifact
-        run: aws s3 cp ArduinoCore-*.tar.bz2 s3://${{ secrets.S3_BUCKET }}/
+        run: |
+          for f in ArduinoCore-*.tar.bz2 ; do
+            aws s3 cp $f s3://${{ secrets.S3_BUCKET }}/
+          done
 
   publish-json:
     name: Publish jsons
