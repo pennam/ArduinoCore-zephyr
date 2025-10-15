@@ -35,7 +35,7 @@ jq -s '{ "packages": [ { "platforms": [ .[0]*.[1]*.[2] ] } ] }' \
 	"version": "$(extra/get_core_version.sh)",
         "url": "https://downloads.arduino.cc/cores/zephyr/$(basename $ARTIFACT_FILE)",
 	"archiveFileName": "$(basename $ARTIFACT_FILE)",
-	"checksum": "SHA256:$(sha256sum $ARTIFACT_FILE | awk '{print $1}')",
+	"checksum": "SHA-256:$(sha256sum $ARTIFACT_FILE | awk '{print $1}')",
 	"size": "$(stat -c %s $ARTIFACT_FILE)",
 	"boards": $BOARD_NAMES
 }
