@@ -34,9 +34,11 @@ SECTIONS {
         KEEP (*(.ctors))
         KEEP (*(.dtors))
         KEEP (*(.fini))
+    }
 
+    .static_thread_data_area : {
         __static_thread_data_list_start = .;
-        KEEP(*(SORT_BY_NAME(.__static_thread_data.static.*)));
+        KEEP(*(.static_thread_data_area SORT_BY_NAME(.__static_thread_data.*)));
         __static_thread_data_list_end = .;
     }
 
