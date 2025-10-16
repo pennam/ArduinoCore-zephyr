@@ -34,6 +34,8 @@ jobs:
           files_ignore: |
             cores/arduino/api/**
             loader/llext_exports.c
+            loader/blobs/4343WA1_*.c
+            loader/blobs/wifi_nvram_image.h
             libraries/examples/**
             libraries/extras/**
             libraries/ea_malloc/**
