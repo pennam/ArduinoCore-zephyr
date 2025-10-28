@@ -34,6 +34,7 @@ manifest:
           - mcuboot
           - nanopb
           - lvgl
+          - fatfs
         path-allowlist:
           - modules/hal/*
 

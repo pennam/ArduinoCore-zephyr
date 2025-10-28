@@ -22,6 +22,10 @@
 	};
 };
 
+&flash1 {
+    // Conflicts with "storage" partition
+	/delete-node/ partitions;
+};
 
 &sci7 {
 	pinctrl-0 = <&sci7_default>;
@@ -294,3 +298,7 @@
 				    <&ioport0 0 0>;
 	};
 };
+
+/* Include common flash filesystem configuration */
+qspi_flash: &at25sf128a {};
+#include "../common/arduino_flash_fs.dtsi"
