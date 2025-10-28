@@ -538,6 +538,11 @@ nano_matter.menu.debug.false=Standard
 nano_matter.menu.debug.true=Debug
 nano_matter.menu.debug.true.build.zsk_args.debug=-debug
 
+nano_matter.menu.link_mode.dynamic=Dynamic
+nano_matter.menu.link_mode.static=Static
+nano_matter.menu.link_mode.static.build.link_mode=static
+nano_matter.menu.link_mode.static.upload.extension=bin-zsk.bin
+
 nano_matter.build.zephyr_target=arduino_nano_matter
 nano_matter.build.zephyr_args=
 nano_matter.build.zephyr_hals=hal_silabs
