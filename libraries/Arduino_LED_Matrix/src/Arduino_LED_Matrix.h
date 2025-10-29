@@ -7,7 +7,7 @@ void matrixEnd(void);
 void matrixPlay(uint8_t *buf, uint32_t len);
 void matrixSetGrayscaleBits(uint8_t _max);
 void matrixGrayscaleWrite(uint8_t *buf);
-void matrixWrite(uint8_t *buf);
+void matrixWrite(uint32_t *buf);
 };
 
 #if __has_include("ArduinoGraphics.h")
@@ -103,7 +103,7 @@ public:
 			}
 			_sequenceDone = true;
 		}
-		matrixWrite((uint8_t *)frame);
+		matrixWrite(frame);
 	}
 
 	void loadFrame(const uint32_t buffer[4]) {
