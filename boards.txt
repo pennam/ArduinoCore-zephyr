@@ -26,7 +26,7 @@ giga.build.float-abi=-mfloat-abi=softfp
 giga.build.extra_flags=
 giga.build.postbuild.cmd="{tools.imgtool.path}/{tools.imgtool.cmd}" exit
 giga.build.architecture=cortex-m7
-giga.build.board=ARDUINO_GIGA
+giga.build.board=GIGA
 giga.vid.0=0x2341
 giga.pid.0=0x0066
 giga.upload_port.0.vid=0x2341
@@ -89,7 +89,7 @@ nano33ble.build.float-abi=-mfloat-abi=hard
 nano33ble.build.extra_flags=
 nano33ble.build.postbuild.cmd="{tools.imgtool.path}/{tools.imgtool.cmd}" exit
 nano33ble.build.architecture=cortex-m4
-nano33ble.build.board=ARDUINO_NANO33BLE
+nano33ble.build.board=NANO33BLE
 nano33ble.vid.0=0x2341
 nano33ble.pid.0=0x035a
 nano33ble.upload_port.0.vid=0x2341
@@ -253,7 +253,7 @@ portentah7.build.float-abi=-mfloat-abi=softfp
 portentah7.build.extra_flags=
 portentah7.build.postbuild.cmd="{tools.imgtool.path}/{tools.imgtool.cmd}" exit
 portentah7.build.architecture=cortex-m7
-portentah7.build.board=ARDUINO_PORTENTA_H7
+portentah7.build.board=PORTENTA_H7
 portentah7.vid.0=0x2341
 portentah7.pid.0=0x005b
 portentah7.upload_port.0.vid=0x2341
@@ -364,7 +364,7 @@ niclasense.build.float-abi=-mfloat-abi=hard
 niclasense.build.extra_flags=
 niclasense.build.postbuild.cmd="{tools.imgtool.path}/{tools.imgtool.cmd}" exit
 niclasense.build.architecture=cortex-m4
-niclasense.build.board=ARDUINO_NICLA_SENSE_ME
+niclasense.build.board=NICLA_SENSE_ME
 niclasense.vid.0=0x2341
 niclasense.pid.0=0x0360
 niclasense.upload_port.0.vid=0x2341
@@ -435,7 +435,7 @@ portentac33.build.architecture=cortex-m33
 portentac33.build.float-abi=-mfloat-abi=hard
 portentac33.build.extra_flags=
 portentac33.build.postbuild.cmd="{tools.imgtool.path}/{tools.imgtool.cmd}" exit
-portentac33.build.board=ARDUINO_PORTENTA_C33
+portentac33.build.board=PORTENTA_C33
 portentac33.vid.0=0x2341
 portentac33.pid.0=0x0068
 portentac33.upload_port.0.vid=0x2341
@@ -488,7 +488,7 @@ opta.build.float-abi=-mfloat-abi=softfp
 opta.build.extra_flags=
 opta.build.postbuild.cmd="{tools.imgtool.path}/{tools.imgtool.cmd}" exit
 opta.build.architecture=cortex-m7
-opta.build.board=ARDUINO_OPTA
+opta.build.board=OPTA
 opta.vid.0=0x2341
 opta.pid.0=0x0064
 opta.upload_port.0.vid=0x2341
