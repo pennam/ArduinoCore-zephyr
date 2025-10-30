@@ -115,3 +115,7 @@
 		};
 	};
 };
+
+&sysrtc0 {
+	status = "okay";
+};
