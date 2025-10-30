@@ -28,11 +28,13 @@ int WiFiClass::begin(const char *ssid, const char *passphrase, wl_enc_type secur
 	if (ret) {
 		return false;
 	}
-	NetworkInterface::begin(false, NET_EVENT_WIFI_MASK);
-	if (blocking) {
+
+	ret = status();
+	if (ret != WL_CONNECTED && blocking) {
 		net_mgmt_event_wait_on_iface(sta_iface, NET_EVENT_WIFI_CONNECT_RESULT, NULL, NULL, NULL,
 									 K_FOREVER);
 	}
+	NetworkInterface::begin(blocking, NET_EVENT_WIFI_MASK);
 	return status();
 }
 
