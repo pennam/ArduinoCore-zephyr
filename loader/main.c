@@ -219,14 +219,13 @@ static int loader(const struct shell *sh) {
 		return 0;
 	}
 #elif CONFIG_LOG
-	printk("Sketch debug mode: %s\n", debug ? "enabled" : "disabled");
-	if (!debug && log_backend_count_get() > 0) {
+	for (int i = 0; i < log_backend_count_get(); i++) {
 		const struct log_backend *backend;
-		// Keep only the first log backend enabled
-		for (int i = 1; i < log_backend_count_get(); i++) {
-			backend = log_backend_get(i);
-			printk("Disabling log backend %p\n", backend);
-			log_backend_disable(backend);
+		backend = log_backend_get(i);
+		log_backend_init(backend);
+		log_backend_enable(backend, backend->cb->ctx, CONFIG_LOG_DEFAULT_LEVEL);
+		if (!debug) {
+			break;
 		}
 	}
 #endif
