@@ -8,10 +8,16 @@ name: Package, test and upload core
 on:
   push:
     branches:
-      - '**'
+      - **
     tags-ignore:
       - tool/**
+    paths:
+      - **
+      - !tools/**
   pull_request:
+    paths:
+      - **
+      - !tools/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.actor }}

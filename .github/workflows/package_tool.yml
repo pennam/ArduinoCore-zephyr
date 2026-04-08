@@ -9,6 +9,10 @@ on:
   push:
     tags:
       - tool/**
+  pull_request:
+    paths:
+      extra/package_tool.sh
+      tools/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.actor }}

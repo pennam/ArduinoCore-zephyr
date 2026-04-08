@@ -10,7 +10,7 @@ if [[ "${1:-}" == refs/tags/tool/* ]]; then
 	TAG="${1#refs/tags/tool/}"
 	TOOL_NAME="${TAG%%/*}"
 	VERSION="${TAG#*/}"
-	TOOL_DIR=$(readlink -f "$(dirname "$0")/$TOOL_NAME")
+	TOOL_DIR=$(readlink -f "$(dirname "$0")/../tools/$TOOL_NAME")
 else
 	TOOL_DIR=$(readlink -f "${1:-.}")
 	TOOL_NAME=$(basename "$TOOL_DIR")
