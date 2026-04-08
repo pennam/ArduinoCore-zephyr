@@ -80,7 +80,7 @@ jobs:
 
   publish-tool:
     name: Publish tool
-    if: ${{ romJSON(needs.build.outputs.IS_RELEASE) && github.repository == 'arduino/ArduinoCore-zephyr' }}
+    if: ${{ fromJSON(needs.build.outputs.IS_RELEASE) && github.repository == 'arduino/ArduinoCore-zephyr' }}
     runs-on: ubuntu-latest
     needs:
       - build
