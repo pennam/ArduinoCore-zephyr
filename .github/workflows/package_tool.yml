@@ -7,12 +7,17 @@ name: Package and upload tool
 
 on:
   push:
+    branches:
+      - '**'
     tags:
-      - tool/**
+      - 'tool/**'
+    paths:
+      - 'tools/**'
+      - 'extra/package_tool.sh'
   pull_request:
     paths:
-      extra/package_tool.sh
-      tools/**
+      - 'tools/**'
+      - 'extra/package_tool.sh'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.actor }}
@@ -21,6 +26,7 @@ concurrency:
 env:
   # use the head SHA for PR hashes, instead of the merge commit
   HEAD_REF: ${{ github.event.pull_request.head.sha || github.ref }}
+  IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/tool/') }}
 
 jobs:
 
@@ -43,9 +49,16 @@ jobs:
           go-version: stable
           cache: false
 
-      - name: Package ${{ github.ref }}
+      - name: Package tool (release)
+        if: fromJSON(env.IS_RELEASE)
+        run: extra/package_tool.sh ${{ github.ref }}
+
+      - name: Build all tools (validation)
+        if: !fromJSON(env.IS_RELEASE)
         run: |
-          extra/package_tool.sh ${{ github.ref }}
+          for tool_dir in tools/*/; do
+            [ -f "$tool_dir/go.mod" ] && extra/package_tool.sh "$tool_dir"
+          done
 
       - name: Upload tool archives
         uses: actions/upload-artifact@v7
@@ -67,7 +80,7 @@ jobs:
   publish-tool:
     name: Publish tool
     runs-on: ubuntu-latest
-    if: ${{ github.repository == 'arduino/ArduinoCore-zephyr' }}
+    if: ${{ fromJSON(env.IS_RELEASE) && github.repository == 'arduino/ArduinoCore-zephyr' }}
     needs:
       - build
     environment: production
