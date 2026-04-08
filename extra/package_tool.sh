@@ -5,14 +5,30 @@
 
 set -e
 
-TOOL_DIR=$(readlink -f ${1:-.})
-TOOL_NAME=$(basename $TOOL_DIR)
-VERSION=${2:-dev}
+# Accept either a tag ref (refs/tags/tool/<name>/<version>) or a directory + version
+if [[ "${1:-}" == refs/tags/tool/* ]]; then
+	TAG="${1#refs/tags/tool/}"
+	TOOL_NAME="${TAG%%/*}"
+	VERSION="${TAG#*/}"
+	TOOL_DIR=$(readlink -f "$(dirname "$0")/$TOOL_NAME")
+else
+	TOOL_DIR=$(readlink -f "${1:-.}")
+	TOOL_NAME=$(basename "$TOOL_DIR")
+	VERSION=${2:-dev}
+fi
 
 if ! [ -f "$TOOL_DIR/go.mod" ] ; then
 	echo "Not a valid tool directory: $TOOL_DIR"
 	echo "Usage: $0 [<tool_dir>] [<version>]"
+	echo "       $0 refs/tags/tool/<name>/<version>"
 	exit 1
+fi
+
+# Export tool metadata for CI workflow steps
+if [ -n "${GITHUB_ENV:-}" ]; then
+	echo "TOOL_NAME=$TOOL_NAME" >> "$GITHUB_ENV"
+	echo "TOOL_VERSION=$VERSION" >> "$GITHUB_ENV"
+	echo "TOOL_ARTIFACT=$TOOL_NAME-$VERSION" >> "$GITHUB_ENV"
 fi
 
 BASE_DIR=$(readlink -f $(dirname $0)/..)

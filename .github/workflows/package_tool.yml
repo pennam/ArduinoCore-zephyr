@@ -1,0 +1,91 @@
+# Copyright (c) Arduino s.r.l. and/or its affiliated companies
+# SPDX-License-Identifier: Apache-2.0
+
+# CI workflow to build, package, test and upload a specific tool.
+
+name: Package, test and upload tool
+
+on:
+  push:
+    tags:
+      - tool/**
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.actor }}
+  cancel-in-progress: true
+
+env:
+  # use the head SHA for PR hashes, instead of the merge commit
+  HEAD_REF: ${{ github.event.pull_request.head.sha || github.ref }}
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    outputs:
+      TOOL_NAME: ${{ env.TOOL_NAME }}
+      VERSION: ${{ env.VERSION }}
+      TOOL_ARTIFACT: ${{ env.TOOL_ARTIFACT }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: 'ignore'
+          fetch-depth: 0
+          persist-credentials: false
+          fetch-tags: true # needed for get_core_version.sh
+      - uses: actions/setup-go@v6
+        with:
+          go-version: stable
+
+      - name: Package ${{ github.ref }}
+        run: |
+          extra/package_tool.sh ${{ github.ref }}
+
+      - name: Upload tool archives
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ env.TOOL_ARTIFACT }}
+          path: |
+            distrib/${{ env.TOOL_ARTIFACT }}-*.tar.gz
+            distrib/${{ env.TOOL_ARTIFACT }}-*.zip
+          retention-days: 1
+
+      - name: Upload tool description JSON
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ env.TOOL_ARTIFACT }}-json
+          path: distrib/${{ env.TOOL_ARTIFACT }}.json
+
+  # Upload the built tool packages to the S3 bucket for public distribution.
+
+  publish-tool:
+    name: Publish tool
+    runs-on: ubuntu-latest
+    if: ${{ github.repository == 'arduino/ArduinoCore-zephyr' }}
+    needs:
+      - build
+    environment: production
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: ${{ needs.build.outputs.TOOL_ARTIFACT }}
+          path: .
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ secrets.IAM_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload tools to S3
+        run: |
+          for f in *.tar.gz *.zip ; do
+            [ -f "$f" ] || continue
+            aws s3 cp "$f" s3://${{ secrets.S3_BUCKET }}/
+          done
+
