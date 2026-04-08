@@ -1,7 +1,7 @@
 # Copyright (c) Arduino s.r.l. and/or its affiliated companies
 # SPDX-License-Identifier: Apache-2.0
 
-# CI workflow to build, package, test and upload a specific tool.
+# CI workflow to build, package and upload a specific tool.
 
 name: Package and upload tool
 
@@ -37,6 +37,7 @@ jobs:
       - uses: actions/setup-go@v6
         with:
           go-version: stable
+          cache: false
 
       - name: Package ${{ github.ref }}
         run: |
