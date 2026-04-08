@@ -54,7 +54,7 @@ jobs:
         run: extra/package_tool.sh ${{ github.ref }}
 
       - name: Build all tools (validation)
-        if: !fromJSON(env.IS_RELEASE)
+        if: ${{ !fromJSON(env.IS_RELEASE) }}
         run: |
           for tool_dir in tools/*/; do
             [ -f "$tool_dir/go.mod" ] && extra/package_tool.sh "$tool_dir"
