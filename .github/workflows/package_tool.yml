@@ -3,7 +3,7 @@
 
 # CI workflow to build, package, test and upload a specific tool.
 
-name: Package, test and upload tool
+name: Package and upload tool
 
 on:
   push:
@@ -54,8 +54,8 @@ jobs:
       - name: Upload tool description JSON
         uses: actions/upload-artifact@v7
         with:
-          name: ${{ env.TOOL_ARTIFACT }}-json
           path: distrib/${{ env.TOOL_ARTIFACT }}.json
+          archive: false
 
   # Upload the built tool packages to the S3 bucket for public distribution.
 
@@ -85,7 +85,6 @@ jobs:
       - name: Upload tools to S3
         run: |
           for f in *.tar.gz *.zip ; do
-            [ -f "$f" ] || continue
             aws s3 cp "$f" s3://${{ secrets.S3_BUCKET }}/
           done
 
