@@ -37,6 +37,7 @@ jobs:
       TOOL_NAME: ${{ env.TOOL_NAME }}
       VERSION: ${{ env.VERSION }}
       TOOL_ARTIFACT: ${{ env.TOOL_ARTIFACT }}
+      IS_RELEASE: ${{ env.IS_RELEASE }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -79,8 +80,8 @@ jobs:
 
   publish-tool:
     name: Publish tool
+    if: ${{ romJSON(needs.build.outputs.IS_RELEASE) && github.repository == 'arduino/ArduinoCore-zephyr' }}
     runs-on: ubuntu-latest
-    if: fromJSON(env.IS_RELEASE) && github.repository == 'arduino/ArduinoCore-zephyr'
     needs:
       - build
     environment: production
