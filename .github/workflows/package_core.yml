@@ -113,6 +113,7 @@ jobs:
           # Preprare an archive of the built binaries (and build dir on failure)
           mkdir -p firmwares variants/${{ matrix.variant }}          
           touch firmwares/zephyr-${{ matrix.variant }}.{elf,bin,config,dts}
+          touch variants/${{ matrix.variant }}/syms-{static,dynamic}.ld
           tar chf - \
             firmwares/*${{ matrix.variant }}* \
             variants/${{ matrix.variant }}/ \
@@ -153,13 +154,6 @@ jobs:
     if: ${{ !cancelled() && needs.build-env.result == 'success' }}
     steps:
 
-      - uses: actions/checkout@v6
-        with:
-          submodules: 'recursive'
-          fetch-depth: 0
-          persist-credentials: false
-          fetch-tags: true
-
       # Get all built binaries
       - uses: actions/download-artifact@v8
         with:
@@ -172,8 +166,7 @@ jobs:
           for f in binaries-*.tar.zstd ; do
             tar --use-compress-program=unzstd -xpf $f
           done
-          # Create the core artifact for this set of boards
-          ./extra/package_core.sh ${{ matrix.artifact }} ${CORE_TAG} distrib/${CORE_ARTIFACT}
+          tar jcf distrib/${CORE_ARTIFACT} variants/ firmwares/
 
       - uses: actions/upload-artifact@v7
         if: ${{ success() || failure() }}
