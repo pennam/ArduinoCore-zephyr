@@ -386,7 +386,7 @@ jobs:
       - run: |
           grep . *.json
           echo "SNIPPETS<<EOF" >> $GITHUB_ENV
-          jq -n 'reduce inputs as $i ({}; .[input_filename] = $i)' ArduinoCore-*.json >> $GITHUB_ENV
+          jq -cn 'reduce inputs as $i ({}; .[input_filename] = $i)' ArduinoCore-*.json >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
           echo "METADATA<<EOF" >> $GITHUB_ENV
           jq -c '{"${{ env.CORE_VER }}.json": .}' ${CORE_VER}.json >> $GITHUB_ENV
