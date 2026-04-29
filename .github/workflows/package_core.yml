@@ -166,6 +166,7 @@ jobs:
           for f in binaries-*.tar.zstd ; do
             tar --use-compress-program=unzstd -xpf $f
           done
+          mkdir -p distrib
           tar jcf distrib/${CORE_ARTIFACT} variants/ firmwares/
 
       - uses: actions/upload-artifact@v7
