@@ -43,3 +43,8 @@ manifest:
         # the 'manifest.project-filter' config. Enable all Zephyr HALs with:
         #
         #   west config -d manifest.project-filter
+
+    - name: cannectivity
+      path: modules/lib/cannectivity
+      url: https://github.com/CANnectivity/cannectivity.git
+      revision: main
