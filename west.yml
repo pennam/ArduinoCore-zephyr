@@ -27,7 +27,7 @@ manifest:
           - cmsis
           - cmsis_6
           - littlefs
-          - tinycrypt
+          - tf-psa-crypto
           - mbedtls
           - segger
           - thrift
