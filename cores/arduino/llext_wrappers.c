@@ -166,6 +166,59 @@ W1(float, tanf, float)
 
 #ifdef CONFIG_ARM
 /* ARM compiler ABI helpers: need to preserve all RTABI argument registers */
+#if defined(__ARM_ARCH_6M__)
+/*
+ * ARMv6-M (Cortex-M0/M0+, e.g. RP2040) is Thumb-1 only and has no movw/movt,
+ * so the naked VN trampoline cannot be used. Fall back to plain C wrappers.
+ * With the correct signatures GCC keeps the RTABI argument registers live and
+ * routes the long-call address through a callee-saved register, so r0-r3 (and
+ * the 64-bit register pairs) survive. The *divmod helpers return their
+ * quotient:remainder pair as a 64-bit value, which the AAPCS places in r0:r1
+ * exactly as the helper does. NOTE: __aeabi_read_tp's special ABI (preserve
+ * r1-r3) cannot be expressed through a C wrapper, so that one helper is the
+ * sole imprecision of this fallback.
+ */
+/* thread pointer access */
+W0(void *, __aeabi_read_tp)
+/* double arithmetic */
+W2(double, __aeabi_dadd, double, double)
+W2(double, __aeabi_dsub, double, double)
+W2(double, __aeabi_dmul, double, double)
+W2(double, __aeabi_ddiv, double, double)
+/* double comparisons */
+W2(int, __aeabi_dcmpeq, double, double)
+W2(int, __aeabi_dcmplt, double, double)
+W2(int, __aeabi_dcmple, double, double)
+W2(int, __aeabi_dcmpgt, double, double)
+W2(int, __aeabi_dcmpge, double, double)
+W2(int, __aeabi_dcmpun, double, double)
+/* float comparisons */
+W2(int, __aeabi_fcmple, float, float)
+W2(int, __aeabi_fcmpun, float, float)
+/* double <-> integer conversions */
+W1(int, __aeabi_d2iz, double)
+W1(unsigned int, __aeabi_d2uiz, double)
+W1(long long, __aeabi_d2lz, double)
+W1(double, __aeabi_i2d, int)
+W1(double, __aeabi_ui2d, unsigned int)
+W1(double, __aeabi_l2d, long long)
+W1(double, __aeabi_ul2d, unsigned long long)
+/* float <-> double / integer conversions */
+W1(float, __aeabi_d2f, double)
+W1(double, __aeabi_f2d, float)
+W1(float, __aeabi_l2f, long long)
+W1(float, __aeabi_ul2f, unsigned long long)
+/* integer division */
+W2(int, __aeabi_idiv, int, int)
+W2(unsigned int, __aeabi_uidiv, unsigned int, unsigned int)
+/* *divmod: quotient:remainder returned as a 64-bit pair in r0:r1 */
+W2(long long, __aeabi_idivmod, int, int)
+W2(unsigned long long, __aeabi_uidivmod, unsigned int, unsigned int)
+W2(long long, __aeabi_ldivmod, long long, long long)
+W2(unsigned long long, __aeabi_uldivmod, unsigned long long, unsigned long long)
+/* 64-bit integer multiply (args in r0:r1 / r2:r3) */
+W2(long long, __aeabi_lmul, long long, long long)
+#else
 /* thread pointer access */
 VN(__aeabi_read_tp)
 /* double arithmetic */
@@ -203,6 +256,17 @@ VN(__aeabi_idivmod)
 VN(__aeabi_uidivmod)
 VN(__aeabi_ldivmod)
 VN(__aeabi_uldivmod)
+/* 64-bit integer multiply (args in r0:r1 / r2:r3) */
+VN(__aeabi_lmul)
+#endif /* __ARM_ARCH_6M__ */
+
+/*
+ * __gnu_thumb1_case_* must NEVER be wrapped or re-exported: the helper
+ * reads its jump table through LR, so any call-through stub repoints LR
+ * at the stub's own code and the dispatch goes wild (hard fault on
+ * RP2040). Local implementations are provided in gnu_thumb1_case.S so
+ * the compiler-emitted BL resolves in-module with the ABI intact.
+ */
 #endif
 
 /* stdio.h */

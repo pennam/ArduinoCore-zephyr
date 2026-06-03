@@ -378,6 +378,12 @@ EXPORT_AEABI_SYM(__aeabi_idivmod);
 EXPORT_AEABI_SYM(__aeabi_uidivmod);
 EXPORT_AEABI_SYM(__aeabi_ldivmod);
 EXPORT_AEABI_SYM(__aeabi_uldivmod);
+/*
+ * __gnu_thumb1_case_* are deliberately NOT exported: they read their
+ * jump table through LR, so they only work when the compiler-emitted
+ * BL reaches them directly. Sketches carry their own implementations
+ * (cores/arduino/gnu_thumb1_case.S).
+ */
 #endif
 
 #if defined(CONFIG_CPP)
