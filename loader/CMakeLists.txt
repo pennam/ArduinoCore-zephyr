@@ -46,8 +46,8 @@ target_link_libraries(app PUBLIC blobs)
 find_package(Git QUIET)
 if(GIT_FOUND)
     execute_process(
-        COMMAND ${GIT_EXECUTABLE} describe --tags
-        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+        COMMAND extra/get_core_version.sh
+        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../
         OUTPUT_VARIABLE CORE_BUILD_VERSION
         OUTPUT_STRIP_TRAILING_WHITESPACE
         ERROR_STRIP_TRAILING_WHITESPACE
