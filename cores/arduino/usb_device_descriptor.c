@@ -38,8 +38,8 @@ USBD_DESC_PRODUCT_DEFINE(sample_product, CONFIG_USB_DEVICE_PRODUCT);
 USBD_DESC_SERIAL_NUMBER_DEFINE(sample_sn);
 /* doc string instantiation end */
 
-USBD_DESC_CONFIG_DEFINE(fs_cfg_desc, "FS Configuration");
-USBD_DESC_CONFIG_DEFINE(hs_cfg_desc, "HS Configuration");
+USBD_DESC_CONFIG_DEFINE(fs_cfg_desc, STRINGIFY(CORE_BUILD_VERSION) "+" STRINGIFY(BUILD_VERSION));
+USBD_DESC_CONFIG_DEFINE(hs_cfg_desc, STRINGIFY(CORE_BUILD_VERSION) "+" STRINGIFY(BUILD_VERSION));
 
 /* doc configuration instantiation start */
 static const uint8_t attributes = 0;

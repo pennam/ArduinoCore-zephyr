@@ -40,7 +40,32 @@ target_sources_ifdef(CONFIG_USB_DEVICE_STACK_NEXT app PRIVATE
 
 FILE(GLOB app_sources *.c)
 target_sources(app PRIVATE ${app_sources})
-target_compile_definitions(app PUBLIC _XOPEN_SOURCE=700)
-target_compile_definitions(app PUBLIC _GNU_SOURCE)
 
 target_link_libraries(app PUBLIC blobs)
+
+find_package(Git QUIET)
+if(GIT_FOUND)
+    execute_process(
+        COMMAND ${GIT_EXECUTABLE} describe --tags
+        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+        OUTPUT_VARIABLE CORE_BUILD_VERSION
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        ERROR_STRIP_TRAILING_WHITESPACE
+        ERROR_VARIABLE stderr
+        RESULT_VARIABLE return_code
+    )
+    if(return_code)
+    message(WARNING "BUILD_VERSION: git describe failed: ${stderr}")
+    else()
+        if(NOT "${stderr}" STREQUAL "")
+            message(WARNING "BUILD_VERSION: git describe warned: ${stderr}")
+        endif()
+    set(CORE_BUILD_VERSION ${CORE_BUILD_VERSION})
+    endif()
+endif()
+
+zephyr_compile_definitions(
+  -D_XOPEN_SOURCE=700
+  -D_GNU_SOURCE
+  -DCORE_BUILD_VERSION=${CORE_BUILD_VERSION}
+)
