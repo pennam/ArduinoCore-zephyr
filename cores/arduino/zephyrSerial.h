@@ -144,7 +144,9 @@ protected:
 #define ZARD_SKIP_FIRST_SERIAL              1
 #define ZARD_FIRST_SERIAL_IS_ARDUINO_ROUTER 1
 #define ARDUINO_ROUTER_PHANDLE              DT_PROP(DT_PATH(zephyr_user), arduino_router_serial)
+#ifndef ARDUINO_ROUTER_SERIAL
 #define ARDUINO_ROUTER_SERIAL               ZARD_SERIAL_NAME(ZARD_SERIAL_INDEXOF(ARDUINO_ROUTER_PHANDLE))
+#endif
 #endif
 
 /* Name of a Serial object for a given index. */
