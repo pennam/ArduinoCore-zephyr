@@ -89,8 +89,13 @@ void arduino::SerialUSB_::begin(unsigned long baudrate, uint16_t config) {
 }
 
 arduino::SerialUSB_::operator bool() {
-	uart_line_ctrl_get(uart, UART_LINE_CTRL_DTR, &dtr);
-	return dtr;
+	int old_dtr = dtr;
+	int ret = uart_line_ctrl_get(uart, UART_LINE_CTRL_DTR, &dtr);
+	ret = dtr && (ret == 0);
+	if (ret && old_dtr == 0) {
+		k_sleep(K_MSEC(1));
+	}
+	return ret;
 }
 
 size_t arduino::SerialUSB_::write(const uint8_t *buffer, size_t size) {
