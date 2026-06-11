@@ -16,6 +16,10 @@
 class ZephyrSSLClient : public ZephyrClient {
 
 public:
+
+	ZephyrSSLClient();
+	~ZephyrSSLClient();
+
 	int connect(const char *host, uint16_t port) override {
 		return connectSSL(host, port, nullptr);
 	}
