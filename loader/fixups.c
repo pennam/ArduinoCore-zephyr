@@ -535,7 +535,6 @@ int system_utilities(void) {
 	/* Backup memory */
 	const struct device *const backup_memory = DEVICE_DT_GET_ONE(st_stm32_backup_sram);
 	if (!device_is_ready(backup_memory)) {
-		printk("ERROR: BackUp SRAM device is not ready\n");
 		return 0;
 	}
 
@@ -543,7 +542,6 @@ int system_utilities(void) {
 	uint32_t reset_cause_id = 0;
 	hwinfo_get_reset_cause(&reset_cause_id);
 	if (reset_cause_id == RESET_POR || backup.magic != 0x67F44F76) {
-		printk("Reset EEPROM memory to default values\n");
 		memset(backup.leds_control_buffer, 0x0, sizeof(backup.leds_control_buffer));
 		memset(backup.fan_control_buffer, 0xFF, sizeof(backup.fan_control_buffer));
 		backup.magic = 0x67F44F76;
@@ -574,7 +572,6 @@ int system_utilities(void) {
 
 	/* Fan PWM out configuration */
 	if (!device_is_ready(fan_pwm)) {
-		printk("Error: PWM device is not ready\n");
 		return 0;
 	}
 	const uint8_t data = 254; //backup.fan_control_buffer[0x30];
@@ -582,42 +579,34 @@ int system_utilities(void) {
 
 	/* TODO Fan TACH input configuration */
 	if (!device_is_ready(fan_tach)) {
-		printk("device is not ready\n");
 		return 0;
 	}
 
 	/* Fan controller EEPROM driver configuration */
     if (!device_is_ready(fan_eeprom)) {
-		printk("fan eeprom device not ready\n");
 		return 0;
 	}
 	eeprom_target_set_changed_callback(fan_eeprom, on_fan_changed, NULL);
 
 	if (i2c_target_driver_register(fan_eeprom) < 0) {
-		printk("Failed to register fan i2c eeprom target driver\n");
 		return 0;
 	}
-	printk("fan eeprom i2c target driver registered\n");
 
 	unsigned int size = eeprom_target_get_size(fan_eeprom);
 	eeprom_target_write_data(fan_eeprom, 0, backup.fan_control_buffer, size);
-	printk("fan eeprom i2c target driver default values set\n");
 
 	/* GPIO expander EEPROM driver configuration */
 	if (!device_is_ready(gpio_eeprom)) {
-		printk("gpio eeprom device not ready\n");
 		return 0;
 	}
 	eeprom_target_set_changed_callback(gpio_eeprom, on_gpio_changed, NULL);
 
 	if (i2c_target_driver_register(gpio_eeprom) < 0) {
-		printk("Failed to register gpio i2c eeprom target driver\n");
 		return 0;
 	}
 
 	size = eeprom_target_get_size(gpio_eeprom);
 	eeprom_target_write_data(gpio_eeprom, 0, backup.leds_control_buffer, size);
-	printk("gpio eeprom i2c target driver registered\n");
 
 	/* Restore LEDs values saved in backup RAM */
 	configure_leds(backup.leds_control_buffer);
