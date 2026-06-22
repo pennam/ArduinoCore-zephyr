@@ -378,6 +378,25 @@ EXPORT_AEABI_SYM(__aeabi_idivmod);
 EXPORT_AEABI_SYM(__aeabi_uidivmod);
 EXPORT_AEABI_SYM(__aeabi_ldivmod);
 EXPORT_AEABI_SYM(__aeabi_uldivmod);
+
+#if defined(__ARM_ARCH_6M__) || (defined(__ARM_ARCH) && __ARM_ARCH < 7)
+/*
+ * Thumb1 switch-dispatch helpers.
+ */
+//extern void __gnu_thumb1_case_uqi(void);
+EXPORT_AEABI_SYM(__gnu_thumb1_case_uqi);
+//extern void __gnu_thumb1_case_sqi(void);
+EXPORT_AEABI_SYM(__gnu_thumb1_case_sqi);
+//extern void __gnu_thumb1_case_uhi(void);
+EXPORT_AEABI_SYM(__gnu_thumb1_case_uhi);
+//extern void __gnu_thumb1_case_shi(void);
+EXPORT_AEABI_SYM(__gnu_thumb1_case_shi);
+//extern void __gnu_thumb1_case_si(void);
+EXPORT_AEABI_SYM(__gnu_thumb1_case_si);
+#endif
+
+/* 64-bit integer multiply runtime helper */
+//FORCE_EXPORT_SYM(__aeabi_lmul);
 #endif
 
 #if defined(CONFIG_CPP)
