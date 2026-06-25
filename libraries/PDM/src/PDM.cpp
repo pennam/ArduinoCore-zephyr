@@ -11,7 +11,6 @@
 #include <zephyr/drivers/regulator.h>
 #include <zephyr/kernel.h>
 
-#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
