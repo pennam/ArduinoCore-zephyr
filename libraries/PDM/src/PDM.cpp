@@ -5,34 +5,33 @@
  */
 
 #include "PDM.h"
-#include "utility/PDM_impl.h"
-/*
- * Copyright (c) Arduino s.r.l. and/or its affiliated companies
- *
- * SPDX-License-Identifier: Apache-2.0
- */
 
+#include <zephyr/audio/dmic.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/regulator.h>
+#include <zephyr/kernel.h>
+
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
 
-/* TODO: add GIGA when zephyr support is added */
+#if defined(ARDUINO_NANO33BLE)
+#include <hal/nrf_pdm.h>
+#endif
 
+/* TODO: add GIGA when zephyr support is added */
 #if !defined(ARDUINO_NANO33BLE)
 #error "Only Nano 33 BLE board is supported by this library at the present"
 #endif
 
 /*
- * ---- CONFIGURATION -----
+ * ---- mic power regulator configuration ----
  */
 
-/* THREAD configuration */
-#define PDM_THREAD_STACK_SIZE 1024
-#define PDM_THREAD_PRIORITY   7
-/* mic power regulator configuration */
 /* DT_NODELABEL(mic_pwr) gets the node ID.
  * DT_NODE_HAS_STATUS(..., okay) returns 1 if status is "okay", 0 otherwise. */
-#define MIC_PWR_NODE          DT_NODELABEL(mic_pwr)
+#define MIC_PWR_NODE DT_NODELABEL(mic_pwr)
 #if DT_NODE_EXISTS(MIC_PWR_NODE) && DT_NODE_HAS_STATUS(MIC_PWR_NODE, okay)
 static const struct device *mic_regulator = DEVICE_DT_GET(MIC_PWR_NODE);
 #define MIC_PWR_PRESENT
@@ -42,10 +41,20 @@ static const struct device *mic_regulator = DEVICE_DT_GET(MIC_PWR_NODE);
  * ---- static local variables ----
  */
 
+#if defined(ARDUINO_NANO33BLE) || defined(ARDUINO_GIGA)
+static struct pcm_stream_cfg stream;
+static struct dmic_cfg cfg;
+/* the PDM mic zephyr device */
+static const struct device *const dmic_dev = DEVICE_DT_GET(DT_NODELABEL(dmic_dev));
+#if defined(ARDUINO_GIGA)
+static const struct device *dfsdm_dev = DEVICE_DT_GET(DT_NODELABEL(dfsdm));
+#endif
+#endif
+
 static struct k_msgq pdm_rx_msgq;
 static char __aligned(4) pdm_msgq_buffer[SLAB_BLOCK_NUM * sizeof(void *)];
 
-struct k_mem_slab pdm_slab;
+static struct k_mem_slab pdm_slab;
 static uint8_t __aligned(32) pdm_slab_buffer[SLAB_BLOCK_SIZE * SLAB_BLOCK_NUM];
 
 static struct k_thread pdm_thread_data;
@@ -55,6 +64,97 @@ static k_tid_t pdm_tid;
 static void (*_onReceive)(void) = NULL;
 
 /*
+ * ---- PDM DRIVER INTERFACE (zephyr dmic) ----
+ */
+
+#if defined(ARDUINO_NANO33BLE) || defined(ARDUINO_GIGA)
+
+static int pdm_read(void **buffer, size_t *size) {
+	return dmic_read(dmic_dev, 0, buffer, size, SYS_FOREVER_MS);
+}
+
+static int pdm_configure(int channels, int sampleRate) {
+	/* checks and verifications */
+
+	/* note: due to the hierarchical structure of the DFSDM peripheral with
+	 * Arduino GIGA is necessary to turn dfsm on before the actual pdm which in
+	 * this case is just a filter within the dfsdm */
+#if defined(ARDUINO_GIGA)
+	if (!device_is_ready(dfsdm_dev)) {
+		int err = device_init(dfsdm_dev);
+		if (err < 0) {
+			return -ENODEV;
+		}
+	}
+#endif
+	/* verify digital microphone is ready */
+	if (!device_is_ready(dmic_dev)) {
+
+		int err = device_init(dmic_dev);
+		if (err < 0) {
+			return -ENODEV;
+		}
+	}
+	/* check on channels */
+	if (channels < 1 || channels > 2) {
+		return -ENOTSUP; /* TODO: find the correct value */
+	}
+	/* check on sampleRate */
+	if (!(sampleRate == 16000 || sampleRate == 41667)) {
+		return -ENOTSUP; /* sample rate not supported */
+	}
+	/* set up PDM configuration */
+	stream.pcm_width = SAMPLE_BIT_WIDTH;
+	stream.mem_slab = &pdm_slab;
+
+	cfg.io.min_pdm_clk_freq = 1000000;
+	cfg.io.max_pdm_clk_freq = 3500000;
+	cfg.io.min_pdm_clk_dc = 40;
+	cfg.io.max_pdm_clk_dc = 60;
+
+	cfg.streams = &stream;
+	cfg.channel.req_num_streams = 1;
+
+	if (channels == 1) {
+		cfg.channel.req_num_chan = 1;
+		cfg.channel.req_chan_map_lo = dmic_build_channel_map(0, 0, PDM_CHAN_LEFT);
+		cfg.streams[0].pcm_rate = sampleRate;
+		cfg.streams[0].block_size = SLAB_BLOCK_SIZE;
+	} else {
+		/* 2 channels */
+		/* [TODO]: Configuration not verified on real hw */
+		cfg.channel.req_num_chan = 2;
+		cfg.channel.req_chan_map_lo = dmic_build_channel_map(0, 0, PDM_CHAN_LEFT) |
+									  dmic_build_channel_map(1, 0, PDM_CHAN_RIGHT);
+		cfg.streams[0].pcm_rate = sampleRate;
+		cfg.streams[0].block_size = SLAB_BLOCK_SIZE;
+	}
+
+	/* send mic configuration to driver */
+	return dmic_configure(dmic_dev, &cfg);
+}
+
+static int pdm_start() {
+	return dmic_trigger(dmic_dev, DMIC_TRIGGER_START);
+}
+
+static int pdm_stop() {
+	return dmic_trigger(dmic_dev, DMIC_TRIGGER_STOP);
+}
+
+static void pdm_gain(int gain) {
+	/* at the present the zephyr dmic_nrfx_pdm.c does not support the set
+	 * of the gain (gain_l and gain_r are defined in the nrf HAL but not
+	 * used by the driver which use a default value) */
+#if defined(ARDUINO_NANO33BLE)
+	NRF_PDM->GAINR = gain;
+	NRF_PDM->GAINL = gain;
+#endif
+}
+
+#endif
+
+/*
  * ---- MIC RECEIVING THREAD ----
  */
 void pdm_thread(void *, void *, void *) {
@@ -62,7 +162,7 @@ void pdm_thread(void *, void *, void *) {
 	uint32_t size;
 
 	while (true) {
-		int ret = arduino::pdm_read(&buffer, &size);
+		int ret = pdm_read(&buffer, &size);
 		if (ret < 0) {
 			continue;
 		}
@@ -94,15 +194,12 @@ void pdm_thread(void *, void *, void *) {
  * ---- PDM CLASS ----
  */
 
-/* ______________________________________________________________constructor */
 PDMClass::PDMClass() : pdm_init(false), active(false), active_block{nullptr, 0, 0} {
 }
 
-/* _______________________________________________________________destructor */
 PDMClass::~PDMClass() {
 }
 
-/* __________________________________________________________________begin() */
 int PDMClass::begin(int channels, int sampleRate) {
 
 	/* SLAB & THREAD INITIALIZATION (to be performed once) */
@@ -133,7 +230,7 @@ int PDMClass::begin(int channels, int sampleRate) {
 		}
 #endif
 		/* configure the microphone */
-		if (arduino::pdm_configure(channels, sampleRate) < 0) {
+		if (pdm_configure(channels, sampleRate) < 0) {
 			return 0;
 		}
 		/* start or resume receiving thread */
@@ -147,7 +244,7 @@ int PDMClass::begin(int channels, int sampleRate) {
 			k_thread_resume(pdm_tid);
 		}
 		/* start the microphone */
-		if (arduino::pdm_start() < 0) {
+		if (pdm_start() < 0) {
 			return 0;
 		}
 		/* Set the status as ACTIVE */
@@ -159,7 +256,7 @@ int PDMClass::begin(int channels, int sampleRate) {
 void PDMClass::end() {
 	if (active) {
 		/* stop the microphone */
-		arduino::pdm_stop();
+		pdm_stop();
 		/* stop receiving thread */
 		k_thread_suspend(pdm_tid);
 		/* shut down mic regulator */
@@ -172,7 +269,6 @@ void PDMClass::end() {
 	}
 }
 
-/* ______________________________________________________________available() */
 int PDMClass::available() {
 	int avail = 0;
 	// Bytes remaining in the block currently being read
@@ -184,7 +280,6 @@ int PDMClass::available() {
 	return avail;
 }
 
-/* ___________________________________________________________________read() */
 int PDMClass::read(void *user_buffer, size_t size) {
 	size_t bytes_read = 0;
 	uint8_t *dst = (uint8_t *)user_buffer;
@@ -224,17 +319,14 @@ int PDMClass::read(void *user_buffer, size_t size) {
 	return bytes_read;
 }
 
-/* ______________________________________________________________onReceive() */
 void PDMClass::onReceive(void (*func)(void)) {
 	_onReceive = func;
 }
 
-/* ________________________________________________________________setGain() */
 void PDMClass::setGain(int gain) {
-	arduino::pdm_gain(gain);
+	pdm_gain(gain);
 }
 
-/* __________________________________________________________setBufferSize() */
 size_t PDMClass::getBufferSize() {
 	return SLAB_BLOCK_SIZE;
 }
