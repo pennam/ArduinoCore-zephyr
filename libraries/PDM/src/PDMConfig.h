@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef ARDUINO_ZEPHYR_PDM_CONFIG_H
-#define ARDUINO_ZEPHYR_PDM_CONFIG_H
+#ifndef ARDUINO_ZEPHYR_PDMCONFIG_H
+#define ARDUINO_ZEPHYR_PDMCONFIG_H
 
 /* The number of samples the user receive
  * For performance reason the user is strongly suggested to use this
@@ -46,4 +46,4 @@
 #endif
 #endif
 
-#endif // ARDUINO_ZEPHYR_PDM_CONFIG_H
+#endif // ARDUINO_ZEPHYR_PDMCONFIG_H

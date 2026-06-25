@@ -9,7 +9,7 @@
 
 #include <Arduino.h>
 #include <cstdint>
-#include "PDM_config.h"
+#include "PDMConfig.h"
 
 namespace arduino {
 
