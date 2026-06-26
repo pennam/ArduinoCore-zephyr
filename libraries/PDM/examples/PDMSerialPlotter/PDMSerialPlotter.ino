@@ -1,12 +1,14 @@
 /*
- * Copyright (c) Arduino s.r.l. and/or its affiliated companies
- *
- * SPDX-License-Identifier: Apache-2.0
- */
+  This example reads audio data from the on-board PDM microphones, and prints
+  out the samples to the Serial console. The Serial Plotter built into the
+  Arduino IDE can be used to plot the audio data (Tools -> Serial Plotter)
 
-/*
-  Nano 33 BLE and Giga (with Giga Display) Microphone Serial Plotter
+  Circuit:
+  - Arduino Nano 33 BLE board
+
+  This example code is in the public domain.
 */
+
 #include <PDM.h>
 
 // default number of output channels
