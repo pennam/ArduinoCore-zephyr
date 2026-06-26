@@ -33,16 +33,6 @@ static const struct device *mic_regulator = DEVICE_DT_GET(MIC_PWR_NODE);
  * ---- static local variables ----
  */
 
-#if defined(ARDUINO_NANO33BLE) || defined(ARDUINO_GIGA)
-static struct pcm_stream_cfg stream;
-static struct dmic_cfg cfg;
-/* the PDM mic zephyr device */
-static const struct device *const dmic_dev = DEVICE_DT_GET(DT_NODELABEL(dmic_dev));
-#if defined(ARDUINO_GIGA)
-static const struct device *dfsdm_dev = DEVICE_DT_GET(DT_NODELABEL(dfsdm));
-#endif
-#endif
-
 static struct k_msgq pdm_rx_msgq;
 static char __aligned(4) pdm_msgq_buffer[SLAB_BLOCK_NUM * sizeof(void *)];
 
@@ -60,6 +50,14 @@ static void (*_onReceive)(void) = NULL;
  */
 
 #if defined(ARDUINO_NANO33BLE) || defined(ARDUINO_GIGA)
+
+static struct pcm_stream_cfg stream;
+static struct dmic_cfg cfg;
+/* the PDM mic zephyr device */
+static const struct device *const dmic_dev = DEVICE_DT_GET(DT_NODELABEL(dmic_dev));
+#if defined(ARDUINO_GIGA)
+static const struct device *dfsdm_dev = DEVICE_DT_GET(DT_NODELABEL(dfsdm));
+#endif
 
 static int pdm_read(void **buffer, size_t *size) {
 	return dmic_read(dmic_dev, 0, buffer, size, SYS_FOREVER_MS);
