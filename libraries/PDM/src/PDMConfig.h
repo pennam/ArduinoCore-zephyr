@@ -21,11 +21,6 @@
 #define PDM_THREAD_STACK_SIZE 1024
 #define PDM_THREAD_PRIORITY   7
 
-/* TODO: to enable ARDUINO GIGA when supported by zephyr just remove this */
-#ifdef ARDUINO_GIGA
-#undef ARDUINO_GIGA
-#endif
-
 /* memory slab configuration */
 #if defined(ARDUINO_NANO33BLE)
 #define SLAB_BLOCK_NUM 4
