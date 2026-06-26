@@ -40,7 +40,7 @@ static struct k_mem_slab pdm_slab;
 static uint8_t __aligned(32) pdm_slab_buffer[SLAB_BLOCK_SIZE * SLAB_BLOCK_NUM];
 
 static struct k_thread pdm_thread_data;
-K_THREAD_STACK_DEFINE(pdm_thread_stack, PDM_THREAD_STACK_SIZE);
+static k_thread_stack_t *pdm_thread_stack;
 static k_tid_t pdm_tid;
 
 static void (*_onReceive)(void) = NULL;
@@ -200,9 +200,13 @@ int PDMClass::begin(int channels, int sampleRate) {
 		}
 		k_msgq_init(&pdm_rx_msgq, pdm_msgq_buffer, sizeof(void *), SLAB_BLOCK_NUM);
 
-		pdm_tid = k_thread_create(&pdm_thread_data, pdm_thread_stack,
-								  K_THREAD_STACK_SIZEOF(pdm_thread_stack), pdm_thread, NULL, NULL,
-								  NULL, PDM_THREAD_PRIORITY, 0, K_FOREVER);
+		pdm_thread_stack = k_thread_stack_alloc(PDM_THREAD_STACK_SIZE, 0);
+		if (pdm_thread_stack == NULL) {
+			return 0; /* failed thread stack allocation */
+		}
+
+		pdm_tid = k_thread_create(&pdm_thread_data, pdm_thread_stack, PDM_THREAD_STACK_SIZE,
+								  pdm_thread, NULL, NULL, NULL, PDM_THREAD_PRIORITY, 0, K_FOREVER);
 		pdm_init = true;
 	}
 
