@@ -10,16 +10,24 @@
 /* The number of samples the user receive
  * For performance reason the user is strongly suggested to use this
  * dimension for its application buffer that take the audio samples */
+#ifndef PDM_NUMBER_OF_SAMPLES
 #define PDM_NUMBER_OF_SAMPLES 512
+#endif
 
 /* size in bit of an audio sample */
 /* NANO 33 BLE will work only if this value is 16
  * GIGA can work up with 24 */
+#ifndef PDM_SAMPLE_BIT_WIDTH
 #define PDM_SAMPLE_BIT_WIDTH 16
+#endif
 
 /* receiving thread configuration */
+#ifndef PDM_THREAD_STACK_SIZE
 #define PDM_THREAD_STACK_SIZE 1024
-#define PDM_THREAD_PRIORITY   7
+#endif
+#ifndef PDM_THREAD_PRIORITY
+#define PDM_THREAD_PRIORITY 7
+#endif
 
 /* memory slab configuration */
 #if defined(ARDUINO_NANO33BLE)
