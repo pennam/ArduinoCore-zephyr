@@ -8,6 +8,12 @@
 #define ARDUINO_ZEPHYR_PDM_H
 
 #include <Arduino.h>
+
+/* TODO: add GIGA when zephyr support is added */
+#if !defined(ARDUINO_NANO33BLE)
+#error "Only Nano 33 BLE board is currently supported"
+#endif
+
 #include <cstdint>
 #include "PDMConfig.h"
 

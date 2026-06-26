@@ -19,11 +19,6 @@
 #include <hal/nrf_pdm.h>
 #endif
 
-/* TODO: add GIGA when zephyr support is added */
-#if !defined(ARDUINO_NANO33BLE)
-#error "Only Nano 33 BLE board is supported by this library at the present"
-#endif
-
 /*
  * ---- mic power regulator configuration ----
  */
