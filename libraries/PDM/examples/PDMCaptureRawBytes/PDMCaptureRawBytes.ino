@@ -1,28 +1,29 @@
 /*
- * Copyright (c) Arduino s.r.l. and/or its affiliated companies
- *
- * SPDX-License-Identifier: Apache-2.0
- */
+  Nano 33 BLE Microphone to Serial Streamer
 
-/*
-  Nano 33 BLE and GIGA (with Giga Display) Microphone to Serial Streamer
+  Circuit:
+  - Arduino Nano 33 BLE board
 
-  How to use this example
-  -----------------------
+  How to use this example:
 
-  Download this sketch into the Nano33 BLE
-  This will start immediately mic acquisition
-  Be sure that serial monitor or any other program is not accessing the Nano33
-  serial port
-  Start the python script present in the same folder (getWawe.py)
-  This python script will get the data streamed by this sketch in the
-  serial port and pack them into a wav file you can listen with any player on
-  your PC
-  NOTE:
-  the python script uses /dev/ttyACM0 as default serial device, change it
-  accordingly if the nano33 serial does not correspond to this device
-  NOTE: the python script only records about 5 seconds of sounds
+  1. Upload this sketch to the board. Microphone acquisition starts
+     immediately and raw audio samples are streamed over the serial port.
+
+  2. Make sure no serial monitor or other program is keeping the serial
+     port open.
+
+  3. Run the host script provided in the library extras folder:
+       extras/PDMSerialAudioRecorder/PDMSerialAudioRecorder.py
+     It reads the samples streamed by this sketch and packs them into a
+     WAV file you can play back on your PC.
+
+  Notes:
+
+  - The host script uses /dev/ttyACM0 as the default serial device; change
+    it if your board enumerates as a different device.
+  - The host script records about 5 seconds of audio.
 */
+
 #include <PDM.h>
 // default number of output channels
 static const char channels = 1;
