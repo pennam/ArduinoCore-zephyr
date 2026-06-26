@@ -23,10 +23,8 @@
  * ---- mic power regulator configuration ----
  */
 
-/* DT_NODELABEL(mic_pwr) gets the node ID.
- * DT_NODE_HAS_STATUS(..., okay) returns 1 if status is "okay", 0 otherwise. */
 #define MIC_PWR_NODE DT_NODELABEL(mic_pwr)
-#if DT_NODE_EXISTS(MIC_PWR_NODE) && DT_NODE_HAS_STATUS(MIC_PWR_NODE, okay)
+#if DT_NODE_HAS_STATUS_OKAY(MIC_PWR_NODE)
 static const struct device *mic_regulator = DEVICE_DT_GET(MIC_PWR_NODE);
 #define MIC_PWR_PRESENT
 #endif
