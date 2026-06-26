@@ -67,11 +67,10 @@ void loop() {
 	}
 }
 
-// Callback function: Handling the PDM on receive event
-// The PDM library will call this callback function as soon as the internal
-// buffer is ready and can be read
-// It is user responsibility to read from PDM as fast as possible otherwise
-// data will be lost
+// Callback for the PDM "on receive" event.
+// The PDM library calls this function as soon as a new buffer of samples is
+// ready to be read. Read from PDM as fast as possible, otherwise data will be
+// lost.
 void onPDMdata() {
 	// Read into the sample buffer
 	int bytesRead = PDM.read(sampleBuffer, sizeof(sampleBuffer));
