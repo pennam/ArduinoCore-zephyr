@@ -94,7 +94,7 @@ static int pdm_configure(int channels, int sampleRate) {
 		return -ENOTSUP; /* sample rate not supported */
 	}
 	/* set up PDM configuration */
-	stream.pcm_width = SAMPLE_BIT_WIDTH;
+	stream.pcm_width = PDM_SAMPLE_BIT_WIDTH;
 	stream.mem_slab = &pdm_slab;
 
 	cfg.io.min_pdm_clk_freq = 1000000;
