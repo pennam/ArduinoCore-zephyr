@@ -16,9 +16,8 @@
 static const char channels = 1;
 // default PCM output frequency
 static const int frequency = 16000;
-// Buffer to read samples into
-// For better performance set the user buffer dimension to the dimension
-// of the buffer used by PDM library this way
+// Buffer to read samples into. For best performance, match its size to the
+// buffer used internally by the PDM library (PDM_NUMBER_OF_SAMPLES).
 short sampleBuffer[PDM_NUMBER_OF_SAMPLES];
 // Number of bytes read
 volatile int samplesRead;
