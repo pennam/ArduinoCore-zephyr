@@ -120,9 +120,6 @@ nano33ble.upload.offset=0x10000 # bootloader skips its own partition
 
 nano33ble.bootloader.tool=bossac
 nano33ble.bootloader.tool.default=bossac
-nano33ble.bootloader.vid=0x2341
-nano33ble.bootloader.pid=0x035b
-nano33ble.bootloader.interface=0
 nano33ble.bootloader.file=zephyr-{build.variant}.bin
 nano33ble.bootloader.address=0x0000
 
@@ -430,9 +427,6 @@ nicla_sense.upload.target=nrf52
 
 nicla_sense.bootloader.tool=openocd
 nicla_sense.bootloader.tool.default=openocd
-nicla_sense.bootloader.vid=0x2341
-nicla_sense.bootloader.pid=0x0360
-nicla_sense.bootloader.interface=0
 nicla_sense.bootloader.file=zephyr-{build.variant}.hex
 nicla_sense.bootloader.target=nrf52
 
@@ -588,9 +582,6 @@ nano_matter.upload.native_usb=false
 
 nano_matter.bootloader.tool=openocd
 nano_matter.bootloader.tool.default=openocd
-nano_matter.bootloader.vid=0x2341
-nano_matter.bootloader.pid=0x0072
-nano_matter.bootloader.interface=0
 nano_matter.bootloader.file=zephyr-{build.variant}.hex
 nano_matter.bootloader.target=arduino_nano_matter
 
@@ -715,9 +706,6 @@ nano_connect.upload.familyid=0xe48bff56
 
 nano_connect.bootloader.tool=picotool
 nano_connect.bootloader.tool.default=picotool
-nano_connect.bootloader.vid=0x2341
-nano_connect.bootloader.pid=0x005E
-nano_connect.bootloader.interface=0
 nano_connect.bootloader.file=zephyr-{build.variant}
 
 nano_connect.debug.tool=gdb
