@@ -309,7 +309,7 @@ nicla_vision.build.extra_flags=
 nicla_vision.build.postbuild.cmd="{tools.imgtool.path}/{tools.imgtool.cmd}" exit
 nicla_vision.build.board=NICLA_VISION
 nicla_vision.vid.0=0x2341
-nicla_vision.pid.0=0x005b
+nicla_vision.pid.0=0x005f
 nicla_vision.upload_port.0.vid=0x2341
 nicla_vision.upload_port.0.pid=0x025f
 
