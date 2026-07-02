@@ -175,11 +175,8 @@
 
 	pwm16: pwm {
 		status = "okay";
-		zephyr,deferred-init;
-		pinctrl-0 = <>;
-		pinctrl-1 = <>;
-		pinctrl-2 = <&tim16_ch1n_pg8>;
-		pinctrl-names = "default", "sleep", "arduino";
+		pinctrl-0 = <&tim16_ch1n_pg8>;
+		pinctrl-names = "default";
 	};
 };
 
