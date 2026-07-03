@@ -169,18 +169,6 @@
 	};
 };
 
-&timers16 {
-	status = "okay";
-	st,prescaler = <16>;
-
-	pwm16: pwm {
-		status = "okay";
-		pinctrl-0 = <&tim16_ch1n_pg8>;
-		pinctrl-names = "default";
-	};
-};
-
-
 &i2c1 {
 	fan_control: eeprom@2f {
 		reg = <0x2f>;
@@ -329,7 +317,6 @@
 		       <&pwm8 4 PWM_HZ(500) (PWM_POLARITY_NORMAL | STM32_PWM_COMPLEMENTARY)>,
 		       <&pwm4 2 PWM_HZ(500) PWM_POLARITY_NORMAL>,
 		       <&pwm12 2 PWM_HZ(500) PWM_POLARITY_NORMAL>,
-		       <&pwm16 1 PWM_HZ(500) (PWM_POLARITY_NORMAL | STM32_PWM_COMPLEMENTARY)>,
 		       <&pwm3 1 PWM_HZ(500) PWM_POLARITY_NORMAL>,
 		       <&pwm4 3 PWM_HZ(500) PWM_POLARITY_NORMAL>;
 
@@ -339,7 +326,6 @@
                                 <&gpiob 7 0>,
                                 /* <&gpiob 12 0>, */
                                 <&gpiob 15 0>,
-                                <&gpiog 8 0>,
                                 <&gpioc 6 0>,
                                 <&gpiog 2 0>;
 
