@@ -324,6 +324,7 @@ EXPORT_SYMBOL(k_work_submit_to_queue);
 EXPORT_SYMBOL(time);
 EXPORT_SYMBOL(sys_clock_settime);
 EXPORT_SYMBOL(mktime);
+EXPORT_SYMBOL(gmtime);
 
 EXPORT_SYMBOL(printf);
 EXPORT_SYMBOL(sprintf);
