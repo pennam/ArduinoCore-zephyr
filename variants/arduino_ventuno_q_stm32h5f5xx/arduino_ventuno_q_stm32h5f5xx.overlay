@@ -24,14 +24,20 @@
 };
 
 &fdcan1 {
+    clocks = <&rcc STM32_CLOCK(APB1_2, 9)>,
+             <&rcc STM32_SRC_PLL1_Q FDCAN_SEL(1)>;
 	status = "okay";
 };
 
 &fdcan2 {
+    clocks = <&rcc STM32_CLOCK(APB1_2, 9)>,
+             <&rcc STM32_SRC_PLL1_Q FDCAN_SEL(1)>;
 	status = "okay";
 };
 
 &fdcan3 {
+    clocks = <&rcc STM32_CLOCK(APB1_2, 9)>,
+             <&rcc STM32_SRC_PLL1_Q FDCAN_SEL(1)>;
 	status = "okay";
 };
 
