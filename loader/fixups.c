@@ -445,10 +445,12 @@ int system_utilities(void) {
 		if (gpio_pin_get_dt(&fault_1v8) == 0) {
 			gpio_pin_configure_dt(&led0r, GPIO_OUTPUT);
 			gpio_pin_configure_dt(&led1r, GPIO_OUTPUT);
-			while (1) {
+			int i = 3;
+			while (i-- > 0) {
 				gpio_pin_toggle_dt(&led0r);
 				gpio_pin_toggle_dt(&led1r);
 				k_sleep(K_MSEC(200));
+				gpio_pin_configure_dt(&force_reboot, GPIO_INPUT | GPIO_PULL_UP);
 			}
 		}
 	}
