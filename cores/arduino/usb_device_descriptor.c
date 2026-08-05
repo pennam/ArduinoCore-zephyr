@@ -80,10 +80,9 @@ static void sample_fix_code_triple(struct usbd_context *uds_ctx, const enum usbd
 	}
 }
 
-static int register_cdc_acm_0(struct usbd_context *const uds_ctx,
+__maybe_unused static int register_cdc_acm_0(struct usbd_context *const uds_ctx,
 			      const enum usbd_speed speed)
 {
-	struct usbd_config_node *cfg_nd;
 	int err;
 
 	err = usbd_register_class(&usbd, "cdc_acm_0", speed, 1);
