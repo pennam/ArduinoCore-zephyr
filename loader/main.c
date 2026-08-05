@@ -21,7 +21,6 @@ LOG_MODULE_REGISTER(sketch);
 #include <zephyr/drivers/uart.h>
 #include <zephyr/drivers/uart/cdc_acm.h>
 #include <zephyr/drivers/uart.h>
-#include <zephyr/usb/usb_device.h>
 
 #include <zephyr/devicetree/fixed-partitions.h>
 
@@ -54,13 +53,13 @@ const struct device *const usb_dev =
 struct usbd_context *usbd_init_device(usbd_msg_cb_t msg_cb);
 static struct usbd_context *_usbd;
 
-int usb_disable() {
+int loader_usb_disable() {
 	usbd_disable(_usbd);
 	usbd_shutdown(_usbd);
 	return 0;
 }
 
-int usb_enable(usb_dc_status_callback status_cb) {
+int loader_usb_enable(void) {
 	int err;
 	_usbd = usbd_init_device(NULL);
 	if (_usbd == NULL) {
@@ -159,7 +158,7 @@ static int loader(const struct shell *sh) {
 		// disables default shell on UART
 		shell_uninit(shell_backend_uart_get_ptr(), NULL);
 		// enables USB and starts the shell
-		usb_enable(NULL);
+		loader_usb_enable();
 		int dtr;
 		do {
 			// wait for the serial port to open
@@ -171,7 +170,7 @@ static int loader(const struct shell *sh) {
 #elif CONFIG_LOG
 #if !CONFIG_USB_DEVICE_INITIALIZE_AT_BOOT
 	if (debug) {
-		usb_enable(NULL);
+		loader_usb_enable();
 	}
 #endif
 	for (int i = 0; i < log_backend_count_get(); i++) {
@@ -267,7 +266,7 @@ static int loader(const struct shell *sh) {
 #if ZARD_FIRST_SERIAL_IS_SERIALUSB
 		if (debug) {
 			// Disable USB before jumping to sketch
-			usb_disable();
+			loader_usb_disable();
 		}
 #endif
 
@@ -358,7 +357,7 @@ static int loader(const struct shell *sh) {
 #if ZARD_FIRST_SERIAL_IS_SERIALUSB
 	if (debug) {
 		// Disable USB before jumping to sketch
-		usb_disable();
+		loader_usb_disable();
 	}
 #endif
 
