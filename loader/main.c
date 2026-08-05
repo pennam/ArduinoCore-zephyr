@@ -264,7 +264,7 @@ static int loader(const struct shell *sh) {
 #endif
 #endif
 
-#if TARGET_HAS_USB_CDC
+#if ZARD_FIRST_SERIAL_IS_SERIALUSB
 		if (debug) {
 			// Disable USB before jumping to sketch
 			usb_disable();
@@ -355,7 +355,7 @@ static int loader(const struct shell *sh) {
 	k_thread_join(&llext_thread, K_FOREVER);
 #else
 
-#if TARGET_HAS_USB_CDC
+#if ZARD_FIRST_SERIAL_IS_SERIALUSB
 	if (debug) {
 		// Disable USB before jumping to sketch
 		usb_disable();
