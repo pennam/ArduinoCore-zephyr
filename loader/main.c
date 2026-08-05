@@ -127,7 +127,7 @@ static int loader(const struct shell *sh) {
 	int rc;
 
 	/* Test that attempting to open a disabled flash area fails */
-	rc = flash_area_open(FIXED_PARTITION_ID(user_sketch), &fa);
+	rc = flash_area_open(PARTITION_ID(user_sketch), &fa);
 	if (rc) {
 		printk("Failed to open flash area, rc %d\n", rc);
 		return rc;
