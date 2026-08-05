@@ -217,7 +217,7 @@ int maybe_flash_bootloader(void) {
 	const struct flash_area *fa;
 	int rc;
 
-	rc = flash_area_open(FIXED_PARTITION_ID(mcuboot), &fa);
+	rc = flash_area_open(PARTITION_ID(mcuboot), &fa);
 	if (rc) {
 		printk("Failed to open flash area, rc %d\n", rc);
 		return rc;
