@@ -29,7 +29,7 @@ config ARDUINO_API_SERIAL_RX_BUFFER_SIZE
 
 config ARDUINO_API_SERIAL_TX_BUFFER_SIZE
 	int "TX buffer size for Arduino Serial API"
-	default 1024
+	default 64
 
 config ARDUINO_ENTRY
 	bool "Provide arduino setup and loop entry points"
