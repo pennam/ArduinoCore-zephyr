@@ -38,6 +38,18 @@ struct sketch_header_v1 {
 #define SKETCH_FLAG_IMMEDIATE    0x04
 #define SKETCH_FLAG_WAIT_FOR_APP 0x08
 
+#ifdef CONFIG_BOARD_ARDUINO_PORTENTA_C33
+/* Battery-backed handshake to enter ESP32-C3 serial-passthrough mode. A
+ * passthrough sketch writes ARM to a spare VBTBKR slot and resets; the loader
+ * frees the ESP32-C3 UART/pins and writes DONE so the sketch knows it may open
+ * uart8. VBTBKR[0..3] is used by the double-tap, so use a slot clear of it. */
+#define ESP_PT_PRCR_PRC1_UNLOCK  (0xA502U)
+#define ESP_PT_PRCR_LOCK         (0xA500U)
+#define ESP_PT_TAP_DATA          (*((volatile uint32_t *) &R_SYSTEM->VBTBKR[8]))
+#define ESP_PT_ARM               0xE5C33A00
+#define ESP_PT_DONE              0xE5C33D01
+#endif
+
 #define SKETCH_RAM_BUFFER_LEN 131072
 
 /* Need to replicate logic from zephyrSerial.h to avoid C++ here */
@@ -165,6 +177,24 @@ static int loader(const struct shell *sh) {
 		sketch_valid = false;
 		// This is not a valid sketch, but try to start a shell anyway
 	}
+
+#ifdef CONFIG_BOARD_ARDUINO_PORTENTA_C33
+	if (ESP_PT_TAP_DATA == ESP_PT_ARM) {
+		/* A passthrough sketch asked to free the ESP32-C3 UART. Ack with DONE,
+		 * then hold P803 (esp_hosted data-ready) low so that driver's thread
+		 * idles and P804 (EN) low to keep the ESP in reset, so uart8 RX is
+		 * silent when the sketch opens the port. */
+		R_SYSTEM->PRCR = (uint16_t)ESP_PT_PRCR_PRC1_UNLOCK;
+		ESP_PT_TAP_DATA = ESP_PT_DONE;
+		R_SYSTEM->PRCR = (uint16_t)ESP_PT_PRCR_LOCK;
+
+		const struct device *esp_gpio = DEVICE_DT_GET(DT_NODELABEL(ioport8));
+		if (device_is_ready(esp_gpio)) {
+			gpio_pin_configure(esp_gpio, 3, GPIO_OUTPUT_LOW);
+			gpio_pin_configure(esp_gpio, 4, GPIO_OUTPUT_LOW);
+		}
+	}
+#endif
 
 #if ZARD_FIRST_SERIAL_IS_SERIALUSB
 	int debug = (!sketch_valid) || (sketch_hdr->flags & SKETCH_FLAG_DEBUG);
