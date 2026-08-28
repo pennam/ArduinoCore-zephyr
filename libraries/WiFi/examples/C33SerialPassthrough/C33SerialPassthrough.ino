@@ -18,12 +18,8 @@
   therefore stays download-armed; power-cycle (or flash your normal sketch) after
   updating to run the new image. The USB baud rate is mirrored onto uart8.
 
-  On the stock firmware the esp_hosted/BT stacks keep uart8 and P803/P804 busy,
-  so opening uart8 would hang. To avoid a special firmware, the sketch and the
-  loader do a battery-backed handshake (VBTBKR): on the first boot the sketch
-  writes ARM and resets; the loader then holds the ESP in reset, quiets
-  esp_hosted, writes DONE and re-runs the sketch, which now opens uart8 safely.
-  This costs one automatic extra reset at startup.
+  This variant opens uart8 directly (no loader handshake), relying on the
+  uart_renesas_ra_sci ERI-ISR fix that keeps uart_configure(uart8) from hanging.
 
   Copyright (c) Arduino s.r.l. and/or its affiliated companies
 
@@ -61,14 +57,6 @@ static const struct device *const esp_gpio = DEVICE_DT_GET(DT_NODELABEL(ioport8)
 #define ESP_RESET_PIN 4
 #define ESP_GPIO0_PIN 3
 
-/* Battery-backed handshake with the loader (see loader/main.c): ARM asks it to
- * free uart8; the loader answers DONE once the ESP is held in reset. */
-#define ESP_PT_PRCR_PRC1_UNLOCK (0xA502U)
-#define ESP_PT_PRCR_LOCK        (0xA500U)
-#define ESP_PT_TAP_DATA         (*((volatile uint32_t *) &R_SYSTEM->VBTBKR[8]))
-#define ESP_PT_ARM              0xE5C33A00
-#define ESP_PT_DONE             0xE5C33D01
-
 arduino::ZephyrSerial SerialNina(esp_uart);
 
 unsigned long baud = 115200;
@@ -84,22 +72,7 @@ static int usb_line_ctrl(uint32_t ctrl, int fallback) {
   return (int)value;
 }
 
-static void esp_pt_write(uint32_t v) {
-  R_SYSTEM->PRCR = (uint16_t)ESP_PT_PRCR_PRC1_UNLOCK;
-  ESP_PT_TAP_DATA = v;
-  R_SYSTEM->PRCR = (uint16_t)ESP_PT_PRCR_LOCK;
-}
-
 void setup() {
-  /* Ask the loader to free uart8, then reboot so it can. It answers DONE after
-   * holding the ESP in reset and quieting esp_hosted; only then is uart8 safe to
-   * open. Clear DONE before touching uart8 so a failure self-heals on reboot. */
-  if (ESP_PT_TAP_DATA != ESP_PT_DONE) {
-    esp_pt_write(ESP_PT_ARM);
-    NVIC_SystemReset();
-  }
-  esp_pt_write(0);
-
   Serial.begin(baud, SERIAL_8N1);
   SerialNina.begin(baud);
 
