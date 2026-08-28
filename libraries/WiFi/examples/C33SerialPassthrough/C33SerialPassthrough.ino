@@ -96,6 +96,14 @@ void loop() {
     rts = _rts;
   }
 
+  /* Mirror the USB CDC baud onto uart8 so esptool's mid-session baud change
+   * (e.g. -b 230400) keeps both ends of the bridge in sync. */
+  int usb_baud = usb_line_ctrl(UART_LINE_CTRL_BAUD_RATE, (int)baud);
+  if (usb_baud > 0 && (unsigned long)usb_baud != baud) {
+    baud = (unsigned long)usb_baud;
+    SerialNina.begin(baud);
+  }
+
   int len = 0;
   while (Serial.available() && len < (int)sizeof(auc_buffer)) {
     auc_buffer[len++] = Serial.read();
