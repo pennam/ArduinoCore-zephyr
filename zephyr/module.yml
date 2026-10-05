@@ -3,6 +3,8 @@ name: arduino-api
 build:
   cmake: .
   kconfig: Kconfig
+  settings:
+    snippet_root: variants/arduino_portenta_h7_stm32h747xx_m7
 samples:
   - samples
 blobs:

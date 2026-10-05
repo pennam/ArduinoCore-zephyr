@@ -1,0 +1,4 @@
+name: giga_display
+append:
+  EXTRA_DTC_OVERLAY_FILE: giga_display.overlay
+  EXTRA_CONF_FILE: giga_display.conf
