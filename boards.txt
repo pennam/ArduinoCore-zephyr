@@ -231,7 +231,10 @@ portentah7.menu.link_mode.static.build.link_mode=static
 portentah7.menu.link_mode.static.upload.extension=bin-zsk.bin
 
 portentah7.build.zephyr_target=arduino_portenta_h7@1.0.0//m7
-portentah7.build.zephyr_args=
+# Select the display pipeline via shield (mutually exclusive):
+#   --shield arduino_portenta_h7_usb_video  -> on-board USB-C video (ANX7625)
+#   --shield arduino_giga_display_shield    -> Giga Display Shield (ST7701)
+portentah7.build.zephyr_args=--shield arduino_portenta_h7_usb_video
 portentah7.build.zephyr_hals=hal_stm32 hal_infineon
 portentah7.build.zephyr_toolchain=arm-zephyr-eabi
 portentah7.build.artifact=zephyr_main
