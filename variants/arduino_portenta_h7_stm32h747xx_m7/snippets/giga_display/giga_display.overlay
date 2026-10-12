@@ -42,6 +42,7 @@
 
 	st7701: st7701@0 {
 		status = "okay";
+		zephyr,deferred-init;
 		compatible = "sitronix,st7701";
 		reg = <0x0>;
 		height = <800>;
