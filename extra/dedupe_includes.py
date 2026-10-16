@@ -9,6 +9,10 @@
 # 'llext-edk/include' part of the path), then deletes the duplicate copies
 # from the variants' directories.
 #
+# Files linked by a '#include "..."' to a file that is not common to all
+# variants are kept in place, since such includes are first looked up in the
+# including file's own directory and would break if the two were split.
+#
 # Each variant's "includes.txt" (a list of "-iwithprefixbefore<path>"
 # compiler flags, each path relative to the variant's own directory) is
 # updated to match: entries fully emptied by the move are repointed at the
@@ -16,16 +20,21 @@
 # from disk; entries only partially emptied get an extra entry added for the
 # common directory alongside the original. This only happens when not
 # running with --dry-run.
+#
+# Finally, every header reachable through each variant's "includes.txt" is
+# checked to still resolve to the same content; the script fails otherwise.
 
 import argparse
 import hashlib
 import os
 import posixpath
+import re
 import shutil
 import sys
 from pathlib import Path
 
 INCLUDE_FLAG = "-iwithprefixbefore"
+QUOTED_INCLUDE_RE = re.compile(rb'^\s*#\s*include\s*"([^"]+)"', re.MULTILINE)
 VARIANTS_DIR = Path("variants")
 LLEXT_INCLUDE = Path("llext-edk/include")
 
@@ -64,6 +73,52 @@ def find_common_files(per_dir_hashes: list[dict[Path, str]]) -> dict[Path, str]:
         if all(other.get(rel_path) == digest for other in rest):
             common[rel_path] = digest
     return common
+
+
+def quoted_include_edges(directory: Path, files) -> set[tuple[Path, Path]]:
+    # '#include "x"' is first looked up in the including file's directory,
+    # so both files must stay together for that lookup to keep working.
+    edges = set()
+    for rel_path in files:
+        for inc in QUOTED_INCLUDE_RE.findall((directory / rel_path).read_bytes()):
+            target = posixpath.normpath((rel_path.parent / inc.decode(errors="replace")).as_posix())
+            if Path(target) in files:
+                edges.add((rel_path, Path(target)))
+    return edges
+
+
+def prune_split_quoted_includes(common: dict[Path, str], edges) -> int:
+    pruned = 0
+    changed = True
+    while changed:
+        changed = False
+        for a, b in edges:
+            if (a in common) != (b in common):
+                del common[a if a in common else b]
+                pruned += 1
+                changed = True
+    return pruned
+
+
+def resolve_headers(name: str) -> dict[str, str]:
+    # Map each header reachable via includes.txt to the content it resolves to.
+    variant_root = VARIANTS_DIR / name
+    resolved: dict[str, str] = {}
+    includes_txt = variant_root / "includes.txt"
+    if not includes_txt.is_file():
+        return resolved
+    for line in includes_txt.read_text().splitlines():
+        if not line.startswith(INCLUDE_FLAG):
+            continue
+        directory = Path(str(variant_root) + line[len(INCLUDE_FLAG) :])
+        if not directory.is_dir():
+            continue
+        for path in directory.rglob("*"):
+            if path.is_file():
+                key = path.relative_to(directory).as_posix()
+                if key not in resolved:
+                    resolved[key] = hash_file(path)
+    return resolved
 
 
 def update_includes_txt(name: str, common_dir: Path, common_rel_paths) -> None:
@@ -167,6 +222,11 @@ def main() -> int:
     per_dir_hashes = [scan_directory(input_path(name)) for name in variant_names]
     common = find_common_files(per_dir_hashes)
 
+    edges = set()
+    for name, hashes in zip(variant_names, per_dir_hashes):
+        edges |= quoted_include_edges(input_path(name), hashes.keys())
+    pruned = prune_split_quoted_includes(common, edges)
+
     total_size = sum(
         (input_path(variant_names[0]) / rel_path).stat().st_size for rel_path in common
     )
@@ -176,10 +236,14 @@ def main() -> int:
     for name, hashes in zip(variant_names, per_dir_hashes):
         print(f"  {input_path(name)}: {len(hashes)} files")
     print(f"{len(common)} files common to all variants")
+    if pruned:
+        print(f"  ({pruned} more kept in the variants to preserve '#include \"...\"' lookups)")
     print(f"{freed} bytes would be freed" if args.dry_run else f"{freed} bytes freed")
 
     if args.dry_run:
         return 0
+
+    resolved_before = {name: resolve_headers(name) for name in variant_names}
 
     for rel_path in common:
         src = input_path(variant_names[0]) / rel_path
@@ -197,7 +261,17 @@ def main() -> int:
     for name in variant_names:
         update_includes_txt(name, common_dir, common.keys())
 
-    return 0
+    failed = False
+    for name in variant_names:
+        before, after = resolved_before[name], resolve_headers(name)
+        changed = sorted(k for k in before.keys() | after.keys() if before.get(k) != after.get(k))
+        for header in changed[:10]:
+            print(f"error: {name}: <{header}> no longer resolves to the same file", file=sys.stderr)
+        if changed:
+            print(f"error: {name}: {len(changed)} headers affected", file=sys.stderr)
+            failed = True
+
+    return 1 if failed else 0
 
 
 if __name__ == "__main__":
