@@ -9,13 +9,7 @@ source venv/bin/activate
 
 ZEPHYR_BASE=$(west topdir)/zephyr
 
-log_msg() {
-	if [ -n "$GITHUB_WORKSPACE" ] ; then
-		echo "::$1::$2"
-	else
-		echo "$2"
-	fi
-}
+source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
 if [ x$ZEPHYR_SDK_INSTALL_DIR == x"" ]; then
 	SDK_PATH=$(west sdk list | grep path | tail -n 1 | cut -d ':' -f 2 | tr -d ' ')
