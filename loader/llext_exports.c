@@ -151,6 +151,10 @@ EXPORT_SYMBOL(k_mem_slab_init);
 EXPORT_SYMBOL(k_mem_slab_free);
 EXPORT_SYMBOL(k_mem_slab_alloc);
 
+// read by the k_is_pre_kernel() inline, e.g. in k_current_get() when CONFIG_ASSERT=y
+extern bool z_sys_post_kernel;
+EXPORT_SYMBOL(z_sys_post_kernel);
+
 #if defined(CONFIG_PINCTRL)
 EXPORT_SYMBOL(pinctrl_lookup_state);
 EXPORT_SYMBOL(pinctrl_configure_pins);
