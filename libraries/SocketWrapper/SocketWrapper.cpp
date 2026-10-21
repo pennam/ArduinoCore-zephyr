@@ -12,7 +12,12 @@
 
 #if defined(CONFIG_NET_SOCKETS_SOCKOPT_TLS)
 #include <zephyr/net/tls_credentials.h>
-#define CA_CERTIFICATE_TAG_BASE 1
+// TLS credentials are global, use fixed tags so they are never registered twice
+#define CA_BUILTIN_TAG 1
+#define CA_CUSTOM_TAG  2
+#if defined(CONFIG_FILE_SYSTEM)
+static bool builtin_ca_registered = false;
+#endif
 #endif
 
 #include <cstring>
@@ -183,7 +188,6 @@ bool ZephyrSocketWrapper::connectSSL(const char *host, uint16_t port, const char
 
 	sec_tag_t sec_tag_opt[2];
 	int tag_count = 0;
-	int tag = CA_CERTIFICATE_TAG_BASE;
 
 	struct timeval timeout_opt = {
 		.tv_sec = 0,
@@ -205,26 +209,26 @@ bool ZephyrSocketWrapper::connectSSL(const char *host, uint16_t port, const char
 	}
 
 #if defined(CONFIG_FILE_SYSTEM)
-	// Try to load builtin CA from filesystem (once)
-	if (cadata == nullptr && loadCADataFromFS()) {
-		// Successfully loaded, add with tag (ignore errors)
-		if (tls_credential_add(tag++, TLS_CREDENTIAL_CA_CERTIFICATE, cadata, cadata_len)) {
-			goto exit;
-		}
+	// Load and register the builtin CA from filesystem (once)
+	if (!builtin_ca_registered && (cadata != nullptr || loadCADataFromFS())) {
+		int err =
+			tls_credential_add(CA_BUILTIN_TAG, TLS_CREDENTIAL_CA_CERTIFICATE, cadata, cadata_len);
+		builtin_ca_registered = (err == 0 || err == -EEXIST);
+	}
+	if (builtin_ca_registered) {
+		sec_tag_opt[tag_count++] = CA_BUILTIN_TAG;
 	}
 #endif
 
-	// Add custom CA if provided (uses next available tag)
+	// Replace any previously registered custom CA. Note: the credential store
+	// keeps only the pointer, so cert must stay valid until the handshake is done.
 	if (cert != nullptr) {
-		if (tls_credential_add(tag++, TLS_CREDENTIAL_CA_CERTIFICATE, cert, strlen(cert) + 1) != 0) {
+		tls_credential_delete(CA_CUSTOM_TAG, TLS_CREDENTIAL_CA_CERTIFICATE);
+		if (tls_credential_add(CA_CUSTOM_TAG, TLS_CREDENTIAL_CA_CERTIFICATE, cert,
+							   strlen(cert) + 1) != 0) {
 			goto exit;
 		}
-	}
-
-	// Build sequential tag list
-	tag_count = tag - CA_CERTIFICATE_TAG_BASE;
-	for (int i = 0; i < tag_count; i++) {
-		sec_tag_opt[i] = CA_CERTIFICATE_TAG_BASE + i;
+		sec_tag_opt[tag_count++] = CA_CUSTOM_TAG;
 	}
 
 	raw_sock_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TLS_1_2);
@@ -235,7 +239,8 @@ bool ZephyrSocketWrapper::connectSSL(const char *host, uint16_t port, const char
 	}
 
 	if (setsockopt(*sock_fd, SOL_TLS, TLS_HOSTNAME, host, strlen(host)) ||
-		setsockopt(*sock_fd, SOL_TLS, TLS_SEC_TAG_LIST, sec_tag_opt, sizeof(sec_tag_opt)) ||
+		(tag_count > 0 && setsockopt(*sock_fd, SOL_TLS, TLS_SEC_TAG_LIST, sec_tag_opt,
+									 tag_count * sizeof(sec_tag_t))) ||
 		setsockopt(*sock_fd, SOL_SOCKET, SO_RCVTIMEO, &timeout_opt, sizeof(timeout_opt))) {
 		goto exit;
 	}
@@ -253,7 +258,7 @@ exit:
 		res = nullptr;
 	}
 
-	if (!rv && *sock_fd >= 0) {
+	if (!rv) {
 		sock_fd = nullptr;
 	}
 	return rv;
