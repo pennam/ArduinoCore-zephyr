@@ -260,7 +260,7 @@ static int loader(const struct shell *sh) {
 			matrixBegin();
 			matrixSetGrayscaleBits(8);
 			while (1) {
-				matrixPlay(usbanimation_raw, usbanimation_raw_len);
+				matrixPlay((uint8_t *)usbanimation_raw, usbanimation_raw_len);
 				k_sleep(K_MSEC(10));
 			}
 		}
