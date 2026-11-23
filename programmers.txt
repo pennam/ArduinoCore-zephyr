@@ -21,3 +21,12 @@ openocd.protocol=SWD
 openocd.program.tool=openocd
 openocd.program.tool.default=openocd
 openocd.program.extra_params=
+
+linkserver.name=NXP LinkServer
+linkserver.protocol=
+linkserver.program.protocol=
+linkserver.program.tool=linkserver
+linkserver.program.tool.default=linkserver
+linkserver.program.extra_params=
+linkserver.bootloader.tool=linkserver
+linkserver.bootloader.tool.default=linkserver

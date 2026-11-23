@@ -362,6 +362,23 @@ tools.pyocd.bootloader.pattern="{cmd}" load --target {bootloader.target} "{uploa
 
 
 #
+# NXP LINKSERVER
+#
+
+# LinkServer cannot be distributed through the Arduino package index: install
+# it from NXP and make sure the LinkServer executable is in PATH.
+tools.linkserver.path=
+tools.linkserver.cmd=LinkServer
+tools.linkserver.program.params.verbose=
+tools.linkserver.program.params.quiet=
+tools.linkserver.program.pattern="{cmd}" flash {upload.linkserver_device} load "{upload.artifacts.sketch}:{upload.address}"
+
+tools.linkserver.bootloader.params.verbose=
+tools.linkserver.bootloader.params.quiet=
+tools.linkserver.bootloader.pattern="{cmd}" flash {upload.linkserver_device} load "{upload.artifacts.loader}"
+
+
+#
 # JLinkExe WRAPPER
 #
 
