@@ -44,7 +44,7 @@
 			<&gpio2 9 0>,			/* D14 */
 			<&gpio2 6 0>,			/* D15 */
 			<&gpio2 0 GPIO_ACTIVE_LOW>,	/* D16 user LED */
-			<&gpio0 0 GPIO_ACTIVE_LOW>,	/* D17 user button */
+			<&gpio0 0 0>,			/* D17 user button (low when pressed) */
 			<&gpio1 14 0>;			/* D18 VBAT sense */
 
 		adc-pin-gpios = <&gpio1 4 0>,			/* A0 = D0, AIN0 */
