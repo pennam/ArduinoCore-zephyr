@@ -98,6 +98,18 @@
 		};
 	};
 
+	i2c30_arduino_default: i2c30_arduino_default {
+		group1 {
+			psels = <NRF_PSEL(TWIM_SDA, 0, 4)>,
+				<NRF_PSEL(TWIM_SCL, 0, 3)>;
+			/* Same as i2c22: on the standard (non-Sense) board the
+			 * D11/D12 back pads have no pull-ups at all, so Wire1
+			 * stalls. On the Sense board the IMU's external pull-ups
+			 * dominate the weak internal ones, so this is harmless. */
+			bias-pull-up;
+		};
+	};
+
 	empty_default: empty_default {
 		group1 {
 			psels = <>;
@@ -161,6 +173,10 @@
 
 &i2c22 {
 	pinctrl-0 = <&i2c22_arduino_default>;
+};
+
+&i2c30 {
+	pinctrl-0 = <&i2c30_arduino_default>;
 };
 
 &cpuapp_rram {
