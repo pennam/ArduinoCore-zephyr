@@ -4,12 +4,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#define MOSI 10
-#define MISO 9
-#define SCK  8
-#define SS   10
-#define SDA  4
-#define SCL  5
+// SPI and I2C (Wire) pins; indices match digital-pin-gpios
+#define MOSI    D10 /* P2.02 */
+#define MISO    D9  /* P2.04 */
+#define SCK     D8  /* P2.01 */
+#define SS      D3  /* P1.07, no dedicated CS on the XIAO connector */
+#define SDA     D4  /* P1.10 */
+#define SCL     D5  /* P1.11 */
 
 /* XIAO connector roles match the other XIAO boards: Serial1 = D6/D7,
  * Wire = D4/D5, SPI = D8/D9/D10; Wire1 (i2c30) is on the back pads
