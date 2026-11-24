@@ -785,10 +785,9 @@ seeed_xiao_ble.upload.wait_for_upload_port=true
 seeed_xiao_ble.upload.native_usb=true
 seeed_xiao_ble.upload.offset=0x0 # uploader programs at absolute addresses (sketch partition start)
 
-seeed_xiao_ble.bootloader.tool=adafruit-nrfutil
-seeed_xiao_ble.bootloader.tool.default=adafruit-nrfutil
-seeed_xiao_ble.bootloader.file=zephyr-{build.variant}.bin
-seeed_xiao_ble.bootloader.address=0x27000
+seeed_xiao_ble.build.ota.magic=0x28868044
+seeed_xiao_ble.build.ota.sketch_offset={bootloader.maximum_size}
+seeed_xiao_ble.recipe.hooks.objcopy.postobjcopy.4.pattern="{tools.adafruit-nrfutil.cmd}" dfu genpkg --dev-type 0x0052 --application "{build.path}/{build.project_name}.{upload.extension}-bundle.bin" "{build.path}/{build.project_name}.zip"
 
 seeed_xiao_ble.debug.tool=gdb
 seeed_xiao_ble.debug.server.openocd.scripts.0=interface/{programmer.protocol}.cfg
