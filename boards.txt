@@ -776,8 +776,6 @@ seeed_xiao_ble.upload_port.1.pid=0x0045
 seeed_xiao_ble.upload_port.2.vid=0x2886
 seeed_xiao_ble.upload_port.2.pid=0x0044
 
-# WIP: 1200bps-touch -> serial DFU flow; upload recipe and the tool
-# dependency for the package index are still to be discussed with Arduino.
 seeed_xiao_ble.upload.tool=adafruit-nrfutil
 seeed_xiao_ble.upload.tool.default=adafruit-nrfutil
 seeed_xiao_ble.upload.protocol=
