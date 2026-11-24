@@ -767,14 +767,6 @@ seeed_xiao_nrf54l15.build.postbuild.cmd="{tools.imgtool.path}/{tools.imgtool.cmd
 seeed_xiao_nrf54l15.build.board=SEEED_XIAO_NRF54L15
 seeed_xiao_nrf54l15.upload_port.0.vid=0x2886
 seeed_xiao_nrf54l15.upload_port.0.pid=0x0066
-# Upload goes through the onboard SAMD11 CMSIS-DAP probe: the USB-C
-# connector is wired to the SAMD11, whose CDC port is both console and
-# upload port (VID:PID 2886:0066, constant while the board runs). There
-# is no serial-DFU bootloader, so no 1200bps touch and no port swap.
-# Uses the pyocd recipe, same arrangement as ek_ra8d1 and the FRDM
-# boards: pyOCD is a user-installed tool (pip install pyocd; >= 0.37
-# provides the nrf54l target), since the OpenOCD version bundled with
-# the core (0.12.0-arduino1-static) predates nRF54L15 support.
 seeed_xiao_nrf54l15.upload.tool=pyocd
 seeed_xiao_nrf54l15.upload.tool.default=pyocd
 seeed_xiao_nrf54l15.upload.protocol=
@@ -788,8 +780,9 @@ seeed_xiao_nrf54l15.bootloader.tool=pyocd
 seeed_xiao_nrf54l15.bootloader.tool.default=pyocd
 seeed_xiao_nrf54l15.bootloader.file=zephyr-{build.variant}.elf
 seeed_xiao_nrf54l15.bootloader.target=nrf54l
-seeed_xiao_nrf54l15.bootloader.address=0x0
-seeed_xiao_nrf54l15.debug.tool=gdb
-seeed_xiao_nrf54l15.debug.server.openocd.scripts.0=interface/cmsis-dap.cfg
-seeed_xiao_nrf54l15.debug.server.openocd.scripts.1=target/nrf54l15.cfg
-seeed_xiao_nrf54l15.debug.cortex-debug.custom.request=attach
+# No working debug setup yet: the bundled OpenOCD needs to be rebuilt with nRF54L support to enable these
+seeed_xiao_nrf54l15.debug.executable=
+#seeed_xiao_nrf54l15.debug.tool=gdb
+#seeed_xiao_nrf54l15.debug.server.openocd.scripts.0=interface/cmsis-dap.cfg
+#seeed_xiao_nrf54l15.debug.server.openocd.scripts.1=target/nrf54l15.cfg
+#seeed_xiao_nrf54l15.debug.cortex-debug.custom.request=attach
