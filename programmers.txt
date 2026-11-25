@@ -30,3 +30,10 @@ linkserver.program.tool.default=linkserver
 linkserver.program.extra_params=
 linkserver.bootloader.tool=linkserver
 linkserver.bootloader.tool.default=linkserver
+
+pyocd.name=pyOCD
+pyocd.protocol=
+pyocd.program.protocol=
+pyocd.program.tool=pyocd
+pyocd.program.tool.default=pyocd
+pyocd.program.extra_params=
