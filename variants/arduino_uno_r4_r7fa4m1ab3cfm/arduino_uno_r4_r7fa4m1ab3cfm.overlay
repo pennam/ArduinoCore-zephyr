@@ -11,26 +11,29 @@
  *   0x04000 - 0x22000 (120 KB)  loader (image-0)
  *   0x22000 - 0x40000 (120 KB)  user_sketch
  */
-&flash0 {
+&code_flash {
 	/delete-node/ partitions;
 
 	partitions {
-		compatible = "fixed-partitions";
+		ranges;
 		#address-cells = <1>;
 		#size-cells = <1>;
 
 		boot_partition: partition@0 {
+			compatible = "zephyr,mapped-partition";
 			label = "bootloader";
 			reg = <0x00000000 DT_SIZE_K(16)>;
 			read-only;
 		};
 
 		code_partition: partition@4000 {
+			compatible = "zephyr,mapped-partition";
 			label = "image-0";
 			reg = <0x00004000 DT_SIZE_K(120)>;
 		};
 
 		user_sketch: partition@22000 {
+			compatible = "zephyr,mapped-partition";
 			label = "user_sketch";
 			reg = <0x00022000 DT_SIZE_K(120)>;
 		};
