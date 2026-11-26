@@ -483,7 +483,8 @@ EXPORT_AEABI_SYM(__gnu_thumb1_case_si);
 FORCE_EXPORT_SYM(__cxa_pure_virtual);
 #endif
 
-#if defined(CONFIG_BOARD_ARDUINO_UNO_Q) || defined(CONFIG_BOARD_ARDUINO_VENTUNO_Q)
+#if defined(CONFIG_BOARD_ARDUINO_UNO_Q) || defined(CONFIG_BOARD_ARDUINO_VENTUNO_Q) ||          \
+	(defined(CONFIG_BOARD_ARDUINO_UNO_R4) && DT_NODE_HAS_STATUS(DT_NODELABEL(agt1), okay))
 FORCE_EXPORT_SYM(matrixBegin);
 FORCE_EXPORT_SYM(matrixWrite);
 FORCE_EXPORT_SYM(matrixPlay);

@@ -197,6 +197,11 @@ SYS_INIT(internal_flash_clean_regs, APPLICATION, CONFIG_APPLICATION_INIT_PRIORIT
 
 #endif // defined(CONFIG_SOC_FLASH_STM32) && defined(CONFIG_SOC_SERIES_STM32H7X)
 
+#include <zephyr/devicetree.h>
+#if defined(CONFIG_BOARD_ARDUINO_UNO_R4) && DT_NODE_HAS_STATUS(DT_NODELABEL(agt1), okay)
+#include "matrix.inc"
+#endif
+
 #if defined(CONFIG_BOARD_ARDUINO_UNO_Q) || defined(CONFIG_BOARD_ARDUINO_VENTUNO_Q)
 #include "matrix.inc"
 
