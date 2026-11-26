@@ -40,6 +40,13 @@
 	};
 };
 
+/* The option-setting memory (0x01010018) belongs to the Arduino bootloader at
+ * 0x0: don't emit it from the loader, or loader.bin is padded to 16 MB.
+ */
+&option_setting_osis {
+	status = "disabled";
+};
+
 &adc0 {
 	#address-cells = <1>;
 	#size-cells = <0>;
