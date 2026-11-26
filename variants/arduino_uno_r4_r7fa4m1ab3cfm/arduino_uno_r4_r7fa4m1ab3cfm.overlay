@@ -5,6 +5,7 @@
  */
 
 #include <zephyr/dt-bindings/pwm/pwm.h>
+#include <zephyr/dt-bindings/pwm/ra_pwm.h>
 
 /* RA4M1 has 256 KB flash. Split as:
  *   0x00000 - 0x04000 (16 KB)   bootloader
@@ -111,7 +112,10 @@
 
 		builtin-led-gpios = <&ioport1 2 GPIO_ACTIVE_HIGH>;	/* D13 LED */
 
-		pwm-pin-gpios = <&ioport3 4 0>,				/* D8 GPT7_A */
+		pwm-pin-gpios = <&ioport1 5 0>,				/* D3 GPT1_A */
+				<&ioport1 7 0>,				/* D5 GPT0_A */
+				<&ioport1 11 0>,			/* D6 GPT3_A */
+				<&ioport3 4 0>,				/* D8 GPT7_A */
 				<&ioport3 3 0>;				/* D9 GPT7_B */
 
 		serials = <&uart9>,					/* Serial  = USB-C via the ESP32-S3 bridge */
@@ -119,7 +123,10 @@
 		i2cs = <&iic1>;						/* Wire = A4/A5 */
 		spis = <&spi0>;						/* SPI = D11/D12/D13 */
 
-		pwms = <&pwm7 0 PWM_HZ(490) PWM_POLARITY_NORMAL>,
+		pwms = <&pwm1 0 PWM_HZ(490) PWM_POLARITY_NORMAL>,
+		       <&pwm0 0 PWM_HZ(490) PWM_POLARITY_NORMAL>,
+		       <&pwm3 0 PWM_HZ(490) PWM_POLARITY_NORMAL>,
+		       <&pwm7 0 PWM_HZ(490) PWM_POLARITY_NORMAL>,
 		       <&pwm7 1 PWM_HZ(490) PWM_POLARITY_NORMAL>;
 
 		io-channels = <&adc0 9>,
@@ -132,4 +139,80 @@
 				<&ioport0 1 0>,				/* A2 */
 				<&ioport0 2 0>;				/* A3 */
 	};
+};
+
+/* PWM on D3, D5 and D6 (marked ~ on the board, as in the Renesas core). The
+ * pins are muxed to the timer only by analogWrite() (the "arduino" state), so
+ * they stay usable as GPIO until then. D10/D11 are left to SPI.
+ * ICU slots 4-7 and 24-25 are free; they are only used with PWM capture/events.
+ */
+&pinctrl {
+	pwm_empty: pwm_empty {
+		group1 {
+			psels = <>;
+		};
+	};
+
+	pwm0_arduino: pwm0_arduino {
+		group1 {
+			/* GTIOC0A (D5) */
+			psels = <RA_PSEL(RA_PSEL_GPT1, 1, 7)>;
+		};
+	};
+
+	pwm1_arduino: pwm1_arduino {
+		group1 {
+			/* GTIOC1A (D3) */
+			psels = <RA_PSEL(RA_PSEL_GPT1, 1, 5)>;
+		};
+	};
+
+	pwm3_arduino: pwm3_arduino {
+		group1 {
+			/* GTIOC3A (D6) */
+			psels = <RA_PSEL(RA_PSEL_GPT1, 1, 11)>;
+		};
+	};
+};
+
+&pwm0 {
+	status = "okay";
+	zephyr,deferred-init;
+	pinctrl-0 = <&pwm_empty>;
+	pinctrl-1 = <&pwm_empty>;
+	pinctrl-2 = <&pwm0_arduino>;
+	pinctrl-names = "default", "sleep", "arduino";
+	interrupts = <4 1>, <5 1>;
+	interrupt-names = "gtioca", "overflow";
+};
+
+&pwm1 {
+	status = "okay";
+	zephyr,deferred-init;
+	pinctrl-0 = <&pwm_empty>;
+	pinctrl-1 = <&pwm_empty>;
+	pinctrl-2 = <&pwm1_arduino>;
+	pinctrl-names = "default", "sleep", "arduino";
+	interrupts = <6 1>, <7 1>;
+	interrupt-names = "gtioca", "overflow";
+};
+
+&pwm3 {
+	status = "okay";
+	zephyr,deferred-init;
+	pinctrl-0 = <&pwm_empty>;
+	pinctrl-1 = <&pwm_empty>;
+	pinctrl-2 = <&pwm3_arduino>;
+	pinctrl-names = "default", "sleep", "arduino";
+	interrupts = <24 1>, <25 1>;
+	interrupt-names = "gtioca", "overflow";
+	/* GPT3 is 16-bit: PCLKD/4 = 12 MHz gives ~24490 counts at 490 Hz */
+	divider = <RA_PWM_SOURCE_DIV_4>;
+};
+
+/* GPT7 (D8/D9) is 16-bit too: without a divider 490 Hz needs ~98k counts and
+ * every pwm_set() fails with "Out of range period cycles".
+ */
+&pwm7 {
+	divider = <RA_PWM_SOURCE_DIV_4>;
 };
