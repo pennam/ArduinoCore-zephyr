@@ -120,7 +120,8 @@
 
 		serials = <&uart9>,					/* Serial  = USB-C via the ESP32-S3 bridge */
 			  <&uart2>;					/* Serial1 = D0/D1 */
-		i2cs = <&iic1>;						/* Wire = A4/A5 */
+		i2cs = <&iic1>,						/* Wire  = A4/A5 */
+		       <&iic0>;						/* Wire1 = Qwiic connector */
 		spis = <&spi0>;						/* SPI = D11/D12/D13 */
 
 		pwms = <&pwm1 0 PWM_HZ(490) PWM_POLARITY_NORMAL>,
