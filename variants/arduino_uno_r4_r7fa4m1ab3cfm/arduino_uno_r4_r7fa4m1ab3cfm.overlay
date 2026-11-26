@@ -79,7 +79,7 @@
 
 / {
 	zephyr,user {
-		/* D0..D15 then A0..A5 (header order). */
+		/* D0..D13 then A0..A5 (A4/A5 are also SDA/SCL), as in the Renesas core. */
 		digital-pin-gpios = <&ioport3 1 GPIO_ACTIVE_HIGH>,	/* D0  RXD (P301) */
 				    <&ioport3 2 GPIO_ACTIVE_HIGH>,	/* D1  TXD (P302) */
 				    <&ioport1 4 GPIO_ACTIVE_HIGH>,	/* D2  (P104)     */
@@ -94,8 +94,6 @@
 				    <&ioport4 11 GPIO_ACTIVE_HIGH>,	/* D11 (P411) MOSI*/
 				    <&ioport4 10 GPIO_ACTIVE_HIGH>,	/* D12 (P410) MISO*/
 				    <&ioport1 2 GPIO_ACTIVE_HIGH>,	/* D13 (P102) SCK */
-				    <&ioport1 1 GPIO_ACTIVE_HIGH>,	/* D14 (P101) SDA */
-				    <&ioport1 0 GPIO_ACTIVE_HIGH>,	/* D15 (P100) SCL */
 
 				    <&ioport0 14 GPIO_ACTIVE_HIGH>,	/* A0  (P014) */
 				    <&ioport0 0 GPIO_ACTIVE_HIGH>,	/* A1  (P000) */
