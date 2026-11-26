@@ -107,7 +107,8 @@
 		pwm-pin-gpios = <&ioport3 4 0>,				/* D8 GPT7_A */
 				<&ioport3 3 0>;				/* D9 GPT7_B */
 
-		serials = <&uart2>;					/* Serial1 = D0/D1 (UART to ESP32-S3) */
+		serials = <&uart9>,					/* Serial  = USB-C via the ESP32-S3 bridge */
+			  <&uart2>;					/* Serial1 = D0/D1 */
 		i2cs = <&iic1>;						/* Wire = A4/A5 */
 		spis = <&spi0>;						/* SPI = D11/D12/D13 */
 
