@@ -8,8 +8,8 @@
 
 /* RA4M1 has 256 KB flash. Split as:
  *   0x00000 - 0x04000 (16 KB)   bootloader
- *   0x04000 - 0x22000 (120 KB)  loader (image-0)
- *   0x22000 - 0x40000 (120 KB)  user_sketch
+ *   0x04000 - 0x23000 (124 KB)  loader (image-0)
+ *   0x23000 - 0x40000 (116 KB)  user_sketch
  */
 &code_flash {
 	/delete-node/ partitions;
@@ -29,13 +29,13 @@
 		code_partition: partition@4000 {
 			compatible = "zephyr,mapped-partition";
 			label = "image-0";
-			reg = <0x00004000 DT_SIZE_K(120)>;
+			reg = <0x00004000 DT_SIZE_K(124)>;
 		};
 
-		user_sketch: partition@22000 {
+		user_sketch: partition@23000 {
 			compatible = "zephyr,mapped-partition";
 			label = "user_sketch";
-			reg = <0x00022000 DT_SIZE_K(120)>;
+			reg = <0x00023000 DT_SIZE_K(116)>;
 		};
 	};
 };
