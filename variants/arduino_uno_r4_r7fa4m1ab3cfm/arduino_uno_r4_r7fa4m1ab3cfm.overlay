@@ -217,3 +217,16 @@
 &pwm7 {
 	divider = <RA_PWM_SOURCE_DIV_4>;
 };
+
+/* LED matrix refresh timer, programmed by loader/matrix.inc (no counter
+ * driver: it does not fit in the loader partition). AGT1 counts PCLKB
+ * (24 MHz), 2400 ticks per 100 us slot. Only the underflow interrupt is used:
+ * ICU slot 26 is the only one left free by the nodes above.
+ */
+&agt1 {
+	status = "okay";
+	interrupts = <26 1>;
+	interrupt-names = "agti";
+	renesas,count-source = "AGT_CLOCK_PCLKB";
+	renesas,prescaler = <0>;
+};
